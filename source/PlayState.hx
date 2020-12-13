@@ -4,12 +4,15 @@ import flixel.FlxState;
 
 class PlayState extends FlxState
 {
-	var player:Player;
+	public var level:LevelMap;
 
 	override public function create()
 	{
-		this.player = new Player(32, 32);
-		add(player);
+		this.bgColor = Global.RGB_BLACK;
+
+		this.level = new LevelMap("level_dev.json");
+		add(level.tiles);
+		add(level.player);
 
 		super.create();
 	}

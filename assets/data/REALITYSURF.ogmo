@@ -1,0 +1,83 @@
+{
+  "name": "REALITYSURF",
+  "ogmoVersion": "3.3.0",
+  "levelPaths": ["."],
+  "backgroundColor": "#282c34ff",
+  "gridColor": "#3c4049cc",
+  "anglesRadians": true,
+  "directoryDepth": 5,
+  "layerGridDefaultSize": {"x": 16, "y": 16},
+  "levelDefaultSize": {"x": 320, "y": 240},
+  "levelMinSize": {"x": 256, "y": 192},
+  "levelMaxSize": {"x": 4096, "y": 4096},
+  "levelValues": [
+    {"name": "name", "definition": "Text", "defaults": ""}
+  ],
+  "defaultExportMode": ".json",
+  "compactExport": false,
+  "externalScript": "",
+  "playCommand": "",
+  "entityTags": [],
+  "layers": [
+    {
+      "definition": "entity",
+      "name": "entities",
+      "gridSize": {"x": 16, "y": 16},
+      "exportID": "81771223",
+      "requiredTags": [],
+      "excludedTags": []
+    },
+    {
+      "definition": "tile",
+      "name": "tiles",
+      "gridSize": {"x": 16, "y": 16},
+      "exportID": "81740455",
+      "exportMode": 0,
+      "arrayMode": 0,
+      "defaultTileset": "tile"
+    }
+  ],
+  "entities": [
+    {
+      "exportID": "81782738",
+      "name": "player",
+      "limit": 1,
+      "size": {"x": 16, "y": 32},
+      "origin": {"x": 0, "y": 16},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ff0000ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": false,
+      "resizeableY": false,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [],
+      "texture": "ogmo/player.png",
+      "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgCAYAAAAbifjMAAAAAXNSR0IArs4c6QAAAIVJREFUSIljYBjygBFdQEFB4T8+DQ8ePEDRg8KBaXZeooZV896YWxiGMKErwqUZlxyGAaSCUQOwGACLKmwAmxzehASLNmSN6AkJpxeQ4xxf2sBqADYNuAxBMYBQPsCmZjQpD08DSM0LKAagp/O9MbcwNBGdF4gFg8yAoZmZsFZthAByVAIAV2A3KWpfpk4AAAAASUVORK5CYII="
+    }
+  ],
+  "tilesets": [
+    {"label": "tiles", "path": "ogmo/tiles.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAAAXNSR0IArs4c6QAAAE1JREFUSIljZKAQKCgo/KdEPwulDmBgYGBwXqJGlr69Mbeo4wCYYaQAmKOZqOUAcsGoA0YdMOqAUQdQrSQktzge8BAYcAcwUmoApdUxAArYCfCbLpGsAAAAAElFTkSuQmCC", "tileWidth": 16, "tileHeight": 16, "tileSeparationX": 0, "tileSeparationY": 0}
+  ]
+}

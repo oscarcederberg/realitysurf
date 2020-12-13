@@ -3,50 +3,59 @@ package;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.math.FlxPoint;
 import flixel.util.FlxTimer;
 
 enum PlayerState
 {
 	Idle;
 	Walking;
+	Running;
 }
 
 class Player extends FlxSprite
 {
 	static final STEPS:Int = 4;
-	static final SPEED:Int = 6;
+	static final SPEED_WALK:Int = 6;
+	static final SPEED_RUN:Int = 8;
+	static final OFFSET_Y:Int = 6;
 
 	var parent:PlayState;
+
 	var currentState:PlayerState;
 	var stepsLeft:Int;
 	var moveSpeed:Int;
+	var midPoint:FlxPoint;
 
 	public function new(x:Float, y:Float)
 	{
-		super(x, y);
+		super(x, y - OFFSET_Y - Global.CELL_SIZE);
 
 		this.parent = cast(FlxG.state);
 
 		this.currentState = PlayerState.Idle;
 		this.facing = FlxObject.DOWN;
 		this.stepsLeft = STEPS;
-		this.moveSpeed = SPEED;
+		this.moveSpeed = SPEED_WALK;
+		this.midPoint = new FlxPoint(x + Global.CELL_SIZE / 2, y + Global.CELL_SIZE + OFFSET_Y);
 
-		loadGraphic("assets/images/player.png", true, 16, 32);
+		loadGraphic("assets/images/player.png", true, Global.CELL_SIZE, 2 * Global.CELL_SIZE);
+
 		animation.add("idle_up", [0]);
-		animation.add("walk_up", [1, 2, 3, 4], SPEED);
+		animation.add("move_up", [1, 2, 3, 4], moveSpeed);
 		animation.add("idle_left", [5]);
-		animation.add("walk_left", [6, 7, 8, 9], SPEED);
+		animation.add("move_left", [6, 7, 8, 9], moveSpeed);
 		animation.add("idle_down", [10]);
-		animation.add("walk_down", [11, 12, 13, 14], SPEED);
+		animation.add("move_down", [11, 12, 13, 14], moveSpeed);
 		animation.add("idle_right", [15]);
-		animation.add("walk_right", [16, 17, 18, 19], SPEED);
+		animation.add("move_right", [16, 17, 18, 19], moveSpeed);
 
 		animation.play("idle_down");
 	}
 
 	override public function update(elapsed:Float):Void
 	{
+		midPoint = new FlxPoint(x + Global.CELL_SIZE / 2, y + Global.CELL_SIZE + OFFSET_Y);
 		handleInput();
 		animate();
 
@@ -60,6 +69,7 @@ class Player extends FlxSprite
 		var _left:Bool = FlxG.keys.anyPressed([LEFT, A]);
 		var _right:Bool = FlxG.keys.anyPressed([RIGHT, D]);
 		var _action:Bool = FlxG.keys.anyPressed([Z, J]);
+		var _shift:Bool = FlxG.keys.anyPressed([SHIFT]);
 
 		if (_up && _down)
 		{
@@ -72,30 +82,46 @@ class Player extends FlxSprite
 
 		if (currentState == PlayerState.Idle)
 		{
+			var dx = 0, dy = 0;
 			stepsLeft = STEPS;
+
 			if (_up)
 			{
+				dy = -Global.CELL_SIZE;
 				facing = FlxObject.UP;
-				currentState = PlayerState.Walking;
-				move();
 			}
 			else if (_left)
 			{
+				dx = -Global.CELL_SIZE;
 				facing = FlxObject.LEFT;
-				currentState = PlayerState.Walking;
-				move();
 			}
 			else if (_down)
 			{
+				dy = Global.CELL_SIZE;
 				facing = FlxObject.DOWN;
-				currentState = PlayerState.Walking;
-				move();
 			}
 			else if (_right)
 			{
+				dx = Global.CELL_SIZE;
 				facing = FlxObject.RIGHT;
-				currentState = PlayerState.Walking;
-				move();
+			}
+
+			if (dx != 0 || dy != 0)
+			{
+				if (parent.level.tiles.overlapsPoint(midPoint.add(dx, dy)))
+				{
+					if (_shift)
+					{
+						moveSpeed = SPEED_RUN;
+						currentState = PlayerState.Running;
+					}
+					else
+					{
+						moveSpeed = SPEED_WALK;
+						currentState = PlayerState.Walking;
+					}
+					move();
+				}
 			}
 		}
 	}
@@ -116,18 +142,19 @@ class Player extends FlxSprite
 					case FlxObject.RIGHT:
 						animation.play("idle_right");
 				}
-			case Walking:
+			case Walking | Running:
 				switch (facing)
 				{
 					case FlxObject.UP:
-						animation.play("walk_up");
+						animation.play("move_up");
 					case FlxObject.LEFT:
-						animation.play("walk_left");
+						animation.play("move_left");
 					case FlxObject.DOWN:
-						animation.play("walk_down");
+						animation.play("move_down");
 					case FlxObject.RIGHT:
-						animation.play("walk_right");
+						animation.play("move_right");
 				}
+				animation.curAnim.frameRate = moveSpeed;
 		}
 	}
 
