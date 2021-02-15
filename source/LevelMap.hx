@@ -1,6 +1,7 @@
 package;
 
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.tile.FlxTilemap;
 
@@ -11,6 +12,7 @@ class LevelMap
 
 	public var player:Player;
 	public var tiles:FlxTypedSpriteGroup<Tile>;
+	public var files:FlxTypedSpriteGroup<File>;
 
 	public function new(file:String)
 	{
@@ -18,9 +20,11 @@ class LevelMap
 		this.tilemap = map.loadTilemap("assets/data/OGMO/tiles.png", "tiles");
 
 		this.tiles = new FlxTypedSpriteGroup<Tile>();
+		this.files = new FlxTypedSpriteGroup<File>();
 
 		placeTiles();
 		this.map.loadEntities(placeEntities, "entities");
+		this.map.loadEntities(placeFiles, "files");
 	}
 
 	public function placeTiles()
@@ -51,6 +55,17 @@ class LevelMap
 		{
 			case "player":
 				player = new Player(real_x, real_y);
+		}
+	}
+
+	public function placeFiles(entity:EntityData)
+	{
+		var real_x = entity.x;
+		var real_y = entity.y;
+		switch (entity.name)
+		{
+			case "file":
+				files.add(new File(real_x, real_y));
 		}
 	}
 }

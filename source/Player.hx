@@ -68,7 +68,7 @@ class Player extends FlxSprite
 		var _down:Bool = FlxG.keys.anyPressed([DOWN, S]);
 		var _left:Bool = FlxG.keys.anyPressed([LEFT, A]);
 		var _right:Bool = FlxG.keys.anyPressed([RIGHT, D]);
-		var _action:Bool = FlxG.keys.anyPressed([Z, J]);
+		var _action:Bool = FlxG.keys.anyJustPressed([Z, J]);
 		var _shift:Bool = FlxG.keys.anyPressed([SHIFT]);
 
 		if (_up && _down)
@@ -104,6 +104,10 @@ class Player extends FlxSprite
 			{
 				dx = Global.CELL_SIZE;
 				facing = FlxObject.RIGHT;
+			}
+			else if (_action)
+			{
+				interact();
 			}
 
 			if (dx != 0 || dy != 0)
@@ -179,6 +183,20 @@ class Player extends FlxSprite
 		else
 		{
 			currentState = PlayerState.Idle;
+		}
+	}
+
+	private function interact()
+	{
+		switch (facing)
+		{
+			case FlxObject.UP:
+
+			case FlxObject.LEFT:
+
+			case FlxObject.DOWN:
+
+			case FlxObject.RIGHT:
 		}
 	}
 }

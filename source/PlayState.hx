@@ -2,9 +2,6 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxState;
-import openfl.display.Shader;
-import openfl.display.ShaderParameter;
-import openfl.filters.ShaderFilter;
 
 class PlayState extends FlxState
 {
