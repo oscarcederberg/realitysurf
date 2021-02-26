@@ -65,7 +65,9 @@ class LevelMap
 		switch (entity.name)
 		{
 			case "file":
-				files.add(new File(real_x, real_y));
+				var values = entity.values;
+				trace(values.toString);
+				files.add(new File(real_x, real_y, values));
 		}
 	}
 }

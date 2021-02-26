@@ -24,7 +24,7 @@
       "name": "entities",
       "gridSize": {"x": 16, "y": 16},
       "exportID": "81771223",
-      "requiredTags": [],
+      "requiredTags": ["entities"],
       "excludedTags": []
     },
     {
@@ -34,14 +34,14 @@
       "exportID": "81740455",
       "exportMode": 0,
       "arrayMode": 0,
-      "defaultTileset": "tile"
+      "defaultTileset": "tiles"
     },
     {
       "definition": "entity",
       "name": "files",
       "gridSize": {"x": 16, "y": 16},
       "exportID": "85069518",
-      "requiredTags": [],
+      "requiredTags": ["files"],
       "excludedTags": []
     }
   ],
