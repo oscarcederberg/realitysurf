@@ -66,7 +66,7 @@ class LevelMap
 		{
 			case "file":
 				var values = entity.values;
-				trace(values.toString);
+				trace(values);
 				files.add(new File(real_x, real_y, values));
 		}
 	}

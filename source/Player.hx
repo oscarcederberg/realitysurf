@@ -110,22 +110,11 @@ class Player extends FlxSprite
 				interact();
 			}
 
-			if (dx != 0 || dy != 0)
+			if ((dx != 0 || dy != 0) && !isBlocked(midPoint.add(dx, dy)))
 			{
-				if (parent.level.tiles.overlapsPoint(midPoint.add(dx, dy)))
-				{
-					if (_shift)
-					{
-						moveSpeed = SPEED_RUN;
-						currentState = PlayerState.Running;
-					}
-					else
-					{
-						moveSpeed = SPEED_WALK;
-						currentState = PlayerState.Walking;
-					}
-					move();
-				}
+				moveSpeed = (_shift ? SPEED_RUN : SPEED_WALK);
+				currentState = (_shift ? PlayerState.Running : PlayerState.Walking);
+				move();
 			}
 		}
 	}
@@ -198,5 +187,10 @@ class Player extends FlxSprite
 
 			case FlxObject.RIGHT:
 		}
+	}
+
+	private function isBlocked(point:FlxPoint):Bool
+	{
+		return !parent.level.tiles.overlapsPoint(point) || parent.level.files.overlapsPoint(point);
 	}
 }

@@ -1,6 +1,6 @@
 {
   "name": "REALITYSURF",
-  "ogmoVersion": "3.4.0",
+  "ogmoVersion": "3.3.0",
   "levelPaths": ["."],
   "backgroundColor": "#282c34ff",
   "gridColor": "#3c4049cc",
@@ -11,7 +11,7 @@
   "levelMinSize": {"x": 256, "y": 192},
   "levelMaxSize": {"x": 4096, "y": 4096},
   "levelValues": [
-    {"name": "name", "definition": "Text", "display": 0, "defaults": ""}
+    {"name": "name", "definition": "Text", "defaults": ""}
   ],
   "defaultExportMode": ".json",
   "compactExport": false,
@@ -119,23 +119,22 @@
       "nodeGhost": true,
       "tags": ["files"],
       "values": [
-        {"name": "name", "definition": "String", "display": 0, "defaults": "", "maxLength": 0, "trimWhitespace": true},
+        {"name": "name", "definition": "String", "defaults": "", "maxLength": 0, "trimWhitespace": true},
         {
           "name": "type",
           "definition": "Enum",
-          "display": 0,
-          "choices": ["file"],
+          "choices": ["text"],
           "defaults": 0
         },
-        {"name": "data", "definition": "String", "display": 0, "defaults": "This is empty", "maxLength": 0, "trimWhitespace": true},
-        {"name": "height", "definition": "Integer", "display": 0, "defaults": 0, "bounded": false, "min": 0, "max": 100},
-        {"name": "width", "definition": "Integer", "display": 0, "defaults": 0, "bounded": false, "min": 0, "max": 100}
+        {"name": "data", "definition": "String", "defaults": "This is empty", "maxLength": 0, "trimWhitespace": true},
+        {"name": "height", "definition": "Integer", "defaults": 0, "bounded": false, "min": 0, "max": 100},
+        {"name": "width", "definition": "Integer", "defaults": 0, "bounded": false, "min": 0, "max": 100}
       ],
       "texture": "ogmo/file.png",
       "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAF9JREFUOI1jYKAQMMIYCgoK/4nR8ODBA0ZkPooBzkvUsGraG3OLwXmJGsPemFsYhjCR4lyYBciuJckAZENggIVYjTDnowOiDEC3Fdkwkr2ADkYNGAwGkJyZYAA9U5ENAA3oGoqc6eRRAAAAAElFTkSuQmCC"
     }
   ],
   "tilesets": [
-    {"label": "tiles", "path": "ogmo/tiles.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAAAXNSR0IArs4c6QAAAE1JREFUSIljZKAQKCgo/KdEPwulDmBgYGBwXqJGlr69Mbeo4wCYYaQAmKOZqOUAcsGoA0YdMOqAUQdQrSQktzge8BAYcAcwUmoApdUxAArYCfCbLpGsAAAAAElFTkSuQmCC", "tileWidth": 16, "tileHeight": 16, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0}
+    {"label": "tiles", "path": "ogmo/tiles.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAAAXNSR0IArs4c6QAAAE1JREFUSIljZKAQKCgo/KdEPwulDmBgYGBwXqJGlr69Mbeo4wCYYaQAmKOZqOUAcsGoA0YdMOqAUQdQrSQktzge8BAYcAcwUmoApdUxAArYCfCbLpGsAAAAAElFTkSuQmCC", "tileWidth": 16, "tileHeight": 16, "tileSeparationX": 0, "tileSeparationY": 0}
   ]
 }

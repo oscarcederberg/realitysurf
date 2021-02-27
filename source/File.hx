@@ -15,15 +15,22 @@ class File extends FlxSprite
 	public var windowWidth:Int;
 	public var windowHeight:Int;
 
-	public function new(x:Float, y:Float, values:Xml)
+	public function new(x:Float, y:Float, values:Null<Dynamic>)
 	{
 		super(x, y);
 
-		this.fileName = values.get("name");
-		this.fileType = FileType.createByName(values.get("type"));
-		this.fileData = values.get("data");
-		this.windowWidth = Std.parseInt(values.get("width"));
-		this.windowHeight = Std.parseInt(values.get("height"));
+		this.fileName = values.name;
+		this.fileData = values.data;
+		this.windowWidth = Std.parseInt(values.width);
+		this.windowHeight = Std.parseInt(values.height);
+		try
+		{
+			this.fileType = FileType.createByName(values.type);
+		}
+		catch (e)
+		{
+			this.fileType = FileType.Text;
+		}
 
 		loadGraphic("assets/images/file.png", false, Global.CELL_SIZE, Global.CELL_SIZE);
 	}

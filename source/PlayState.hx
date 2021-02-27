@@ -17,6 +17,7 @@ class PlayState extends FlxState
 		FlxG.camera.snapToTarget();
 
 		add(level.tiles);
+		add(level.files);
 		add(level.player);
 		add(hud);
 
