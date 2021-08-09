@@ -26,6 +26,8 @@ class PlayState extends FlxState
 
 	override public function update(elapsed:Float)
 	{
+		if (FlxG.keys.justPressed.F1)
+			trace(members);
 		super.update(elapsed);
 	}
 }
