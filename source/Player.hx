@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
+import flixel.system.FlxSound;
 import flixel.util.FlxTimer;
 
 enum PlayerState
@@ -27,6 +28,9 @@ class Player extends FlxSprite
 	var moveSpeed:Int;
 	var midPoint:FlxPoint;
 
+	var stepSounds:Array<FlxSound>;
+	private var stepIndex:Int;
+
 	public function new(x:Float, y:Float)
 	{
 		super(x, y - OFFSET_Y - Global.CELL_SIZE);
@@ -39,8 +43,8 @@ class Player extends FlxSprite
 		this.moveSpeed = SPEED_WALK;
 		this.midPoint = new FlxPoint(x + Global.CELL_SIZE / 2, y + Global.CELL_SIZE + OFFSET_Y);
 
+		// GRAPHICS
 		loadGraphic("assets/images/player.png", true, Global.CELL_SIZE, 2 * Global.CELL_SIZE);
-
 		animation.add("idle_up", [0]);
 		animation.add("move_up", [1, 2, 3, 4], moveSpeed);
 		animation.add("idle_left", [5]);
@@ -49,8 +53,14 @@ class Player extends FlxSprite
 		animation.add("move_down", [11, 12, 13, 14], moveSpeed);
 		animation.add("idle_right", [15]);
 		animation.add("move_right", [16, 17, 18, 19], moveSpeed);
-
 		animation.play("idle_down");
+
+		// SFX
+		stepIndex = 0;
+		stepSounds = [
+			FlxG.sound.load("assets/sounds/step_0.wav"),
+			FlxG.sound.load("assets/sounds/step_1.wav")
+		];
 	}
 
 	override public function update(elapsed:Float):Void
@@ -114,6 +124,8 @@ class Player extends FlxSprite
 			{
 				moveSpeed = (_shift ? SPEED_RUN : SPEED_WALK);
 				currentState = (_shift ? PlayerState.Running : PlayerState.Walking);
+				playStepSound();
+				new FlxTimer().start(1 / moveSpeed, (_) -> playStepSound(), 3);
 				move();
 			}
 		}
@@ -192,5 +204,11 @@ class Player extends FlxSprite
 	private function isBlocked(point:FlxPoint):Bool
 	{
 		return !parent.level.tiles.overlapsPoint(point) || parent.level.files.overlapsPoint(point);
+	}
+
+	private function playStepSound()
+	{
+		stepSounds[stepIndex].play();
+		stepIndex = (stepIndex + 1) % 2;
 	}
 }
