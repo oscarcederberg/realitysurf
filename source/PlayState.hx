@@ -6,6 +6,8 @@ import flixel.FlxState;
 class PlayState extends FlxState
 {
 	public var level:LevelMap;
+
+	public var windowHandler:FileWindowHandler;
 	public var hud:HUD;
 
 	override public function create()
@@ -13,12 +15,15 @@ class PlayState extends FlxState
 		this.bgColor = Global.RGB_BLACK;
 		this.level = new LevelMap("level_dev.json");
 		this.hud = new HUD();
+		this.windowHandler = new FileWindowHandler();
+
 		FlxG.camera.follow(level.player, LOCKON, 0.1);
 		FlxG.camera.snapToTarget();
 
 		add(level.tiles);
 		add(level.files);
 		add(level.player);
+		add(windowHandler.windows);
 		add(hud);
 
 		super.create();
@@ -26,8 +31,13 @@ class PlayState extends FlxState
 
 	override public function update(elapsed:Float)
 	{
-		if (FlxG.keys.justPressed.F1)
-			trace(members);
+		windowHandler.update(elapsed);
+
 		super.update(elapsed);
+	}
+
+	public function createWindow(file:File)
+	{
+		windowHandler.createWindow(file);
 	}
 }

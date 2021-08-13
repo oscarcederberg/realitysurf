@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
 
 enum FileType
@@ -9,6 +10,8 @@ enum FileType
 
 class File extends FlxSprite
 {
+	var parent:PlayState;
+
 	public var fileName:String;
 	public var fileType:FileType;
 	public var fileData:String;
@@ -18,6 +21,8 @@ class File extends FlxSprite
 	public function new(x:Float, y:Float, values:Null<Dynamic>)
 	{
 		super(x, y);
+
+		this.parent = cast(FlxG.state);
 
 		this.fileName = values.name;
 		this.fileData = values.data;
@@ -33,5 +38,10 @@ class File extends FlxSprite
 		}
 
 		loadGraphic("assets/images/file.png", false, Global.CELL_SIZE, Global.CELL_SIZE);
+	}
+
+	public function interact()
+	{
+		parent.createWindow(this);
 	}
 }

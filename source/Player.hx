@@ -189,15 +189,26 @@ class Player extends FlxSprite
 
 	private function interact()
 	{
+		var dx = 0, dy = 0;
 		switch (facing)
 		{
 			case FlxObject.UP:
-
+				dy = -Global.CELL_SIZE;
 			case FlxObject.LEFT:
-
+				dx = -Global.CELL_SIZE;
 			case FlxObject.DOWN:
-
+				dy = Global.CELL_SIZE;
 			case FlxObject.RIGHT:
+				dx = Global.CELL_SIZE;
+		}
+		var point:FlxPoint = midPoint.add(dx, dy);
+
+		for (file in parent.level.files)
+		{
+			if (file.overlapsPoint(point))
+			{
+				file.interact();
+			}
 		}
 	}
 
