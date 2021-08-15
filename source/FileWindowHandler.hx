@@ -71,8 +71,8 @@ class FileWindowHandler
 
 	public function createWindow(file:File):Void
 	{
-		var windowWidth:Int = random.int(1, 8);
-		var windowHeight:Int = random.int(1, 8);
+		var windowWidth:Int = file.windowWidth;
+		var windowHeight:Int = file.windowHeight;
 		var windowX:Int = random.int(0, FlxG.width - Global.CELL_SIZE * (windowWidth + 2) + (FileWindow.OFFSET_SIDE * 2));
 		var windowY:Int = random.int(Global.CELL_SIZE,
 			FlxG.height - Global.CELL_SIZE * (windowHeight + 2) - (FileWindow.OFFSET_TOP + FileWindow.OFFSET_BOTTOM));

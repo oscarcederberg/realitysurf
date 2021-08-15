@@ -63,7 +63,7 @@ class FileWindow extends FlxSprite
 		this.heightInPixels = Global.CELL_SIZE * (height + 2) - (OFFSET_TOP + OFFSET_BOTTOM);
 
 		// GRAPHICS
-		makeGraphic(widthInPixels, heightInPixels, FlxColor.BLUE);
+		makeGraphic(widthInPixels, heightInPixels, FlxColor.TRANSPARENT);
 
 		TILE_TM.scale.set(width, 1);
 		TILE_ML.scale.set(1, height);
@@ -101,18 +101,13 @@ class FileWindow extends FlxSprite
 	{
 		if (currentState == FileWindowState.Dragging)
 		{
-			var _click_pressed:Bool = FlxG.mouse.pressed;
-			var _mouse_point:FlxPoint = FlxG.mouse.getScreenPosition();
-
-			if (_click_pressed)
-			{
-				setPosition(_mouse_point.x - mouseOffsetX, _mouse_point.y - mouseOffsetY);
-			}
-			else
-			{
-				currentState = FileWindowState.Idle;
-			}
+			if (!handler.isWindowActive(this))
+				handler.setWindowAsActive(this);
+			handleDragging();
 		}
+
+		x = Math.min(Math.max(x, 0), FlxG.width - widthInPixels);
+		y = Math.min(Math.max(y, Global.CELL_SIZE), FlxG.height - Global.CELL_SIZE - widthInPixels);
 
 		hitboxWindow.update(elapsed);
 		hitboxBar.update(elapsed);
@@ -134,5 +129,20 @@ class FileWindow extends FlxSprite
 		mouseOffsetX = Std.int(_mouse_point.x - x); // offset wrong?
 		mouseOffsetY = Std.int(_mouse_point.y - y); // offset wrong?
 		currentState = FileWindowState.Dragging;
+	}
+
+	private function handleDragging():Void
+	{
+		var _click_pressed:Bool = FlxG.mouse.pressed;
+		var _mouse_point:FlxPoint = FlxG.mouse.getScreenPosition();
+
+		if (_click_pressed)
+		{
+			setPosition(_mouse_point.x - mouseOffsetX, _mouse_point.y - mouseOffsetY);
+		}
+		else
+		{
+			currentState = FileWindowState.Idle;
+		}
 	}
 }
