@@ -4,7 +4,9 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+import openfl.ui.Keyboard;
 
 enum FileWindowState
 {
@@ -49,8 +51,6 @@ class FileWindow extends FlxSprite
 	public function new(x:Float, y:Float, width:Int, height:Int, handler:FileWindowHandler)
 	{
 		super(x, y);
-		this.scrollFactor.set(0, 0);
-
 		this.depth = 0;
 		this.currentState = FileWindowState.Idle;
 		this.mouseOffsetX = 0;
@@ -63,7 +63,7 @@ class FileWindow extends FlxSprite
 		this.heightInPixels = Global.CELL_SIZE * (height + 2) - (OFFSET_TOP + OFFSET_BOTTOM);
 
 		// GRAPHICS
-		makeGraphic(widthInPixels, heightInPixels, FlxColor.TRANSPARENT);
+		makeGraphic(widthInPixels, heightInPixels, FlxColor.BLUE);
 
 		TILE_TM.scale.set(width, 1);
 		TILE_ML.scale.set(1, height);
@@ -90,20 +90,19 @@ class FileWindow extends FlxSprite
 
 		// COLLISION BOXES
 		hitboxWindow = new Hitbox(this, 0, 0, widthInPixels, heightInPixels);
+		hitboxWindow.scrollFactor.set(0, 0);
 		hitboxBar = new Hitbox(this, 0, 0, widthInPixels, OFFSET_BAR);
+		hitboxBar.scrollFactor.set(0, 0);
 		hitboxClose = new Hitbox(this, widthInPixels - OFFSET_BAR, 0, OFFSET_BAR, OFFSET_BAR);
+		hitboxClose.scrollFactor.set(0, 0);
 	}
 
 	override public function update(elapsed:Float):Void
 	{
-		hitboxWindow.update(elapsed);
-		hitboxBar.update(elapsed);
-		hitboxClose.update(elapsed);
-
 		if (currentState == FileWindowState.Dragging)
 		{
 			var _click_pressed:Bool = FlxG.mouse.pressed;
-			var _mouse_point:FlxPoint = FlxG.mouse.getWorldPosition();
+			var _mouse_point:FlxPoint = FlxG.mouse.getScreenPosition();
 
 			if (_click_pressed)
 			{
@@ -114,6 +113,10 @@ class FileWindow extends FlxSprite
 				currentState = FileWindowState.Idle;
 			}
 		}
+
+		hitboxWindow.update(elapsed);
+		hitboxBar.update(elapsed);
+		hitboxClose.update(elapsed);
 	}
 
 	override public function kill():Void
@@ -126,10 +129,10 @@ class FileWindow extends FlxSprite
 
 	public function activateDragging():Void
 	{
-		var _mouse_point:FlxPoint = FlxG.mouse.getWorldPosition();
+		var _mouse_point:FlxPoint = FlxG.mouse.getPositionInCameraView();
 
-		mouseOffsetX = Std.int(_mouse_point.x - x);
-		mouseOffsetY = Std.int(_mouse_point.y - y);
+		mouseOffsetX = Std.int(_mouse_point.x - x); // offset wrong?
+		mouseOffsetY = Std.int(_mouse_point.y - y); // offset wrong?
 		currentState = FileWindowState.Dragging;
 	}
 }

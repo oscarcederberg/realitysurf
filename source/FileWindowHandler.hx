@@ -16,12 +16,13 @@ class FileWindowHandler
 		this.random = new FlxRandom();
 		this.windows = new FlxTypedSpriteGroup<FileWindow>();
 		this.stack = new GenericStack<FileWindow>();
+		this.windows.scrollFactor.set(0, 0);
 	}
 
 	public function update(elapsed:Float):Void
 	{
 		var _click:Bool = FlxG.mouse.justPressed;
-		var _mouse_point:FlxPoint = FlxG.mouse.getWorldPosition();
+		var _mouse_point:FlxPoint = FlxG.mouse.getPositionInCameraView();
 
 		if (_click)
 		{
@@ -72,10 +73,9 @@ class FileWindowHandler
 	{
 		var windowWidth:Int = random.int(1, 8);
 		var windowHeight:Int = random.int(1, 8);
-		var windowX:Int = Std.int(FlxG.camera.scroll.x) + random.int(0, FlxG.width - Global.CELL_SIZE * (windowWidth + 2) + (FileWindow.OFFSET_SIDE * 2));
-		var windowY:Int = Std.int(FlxG.camera.scroll.y)
-			+ Global.CELL_SIZE
-			+ random.int(0, FlxG.height - Global.CELL_SIZE * (windowHeight + 2) - (FileWindow.OFFSET_TOP + FileWindow.OFFSET_BOTTOM));
+		var windowX:Int = random.int(0, FlxG.width - Global.CELL_SIZE * (windowWidth + 2) + (FileWindow.OFFSET_SIDE * 2));
+		var windowY:Int = random.int(Global.CELL_SIZE,
+			FlxG.height - Global.CELL_SIZE * (windowHeight + 2) - (FileWindow.OFFSET_TOP + FileWindow.OFFSET_BOTTOM));
 
 		var window:FileWindow = new FileWindow(windowX, windowY, windowWidth, windowHeight, this);
 		windows.add(window);

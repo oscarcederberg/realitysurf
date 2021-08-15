@@ -3,8 +3,6 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxBitmapText;
-import flixel.util.FlxColor;
 
 using flixel.util.FlxSpriteUtil;
 
