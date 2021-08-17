@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxState;
+import flixel.util.FlxSort;
 
 class PlayState extends FlxState
 {
@@ -21,8 +22,7 @@ class PlayState extends FlxState
 		FlxG.camera.snapToTarget();
 
 		add(level.tiles);
-		add(level.files);
-		add(level.player);
+		add(level.entities);
 		add(windowHandler.windows);
 		add(hud);
 
@@ -32,8 +32,14 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		windowHandler.update(elapsed);
-
 		super.update(elapsed);
+
+		sortEntities();
+	}
+
+	public function sortEntities()
+	{
+		level.entities.sort((_, obj1, obj2) -> FlxSort.byValues(FlxSort.ASCENDING, obj1.y + obj1.height, obj2.y + obj2.height));
 	}
 
 	public function createWindow(file:File)

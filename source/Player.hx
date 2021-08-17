@@ -30,6 +30,7 @@ class Player extends FlxSprite
 
 	var stepSounds:Array<FlxSound>;
 	private var stepIndex:Int;
+	var collideSound:FlxSound;
 
 	public function new(x:Float, y:Float)
 	{
@@ -61,6 +62,7 @@ class Player extends FlxSprite
 			FlxG.sound.load("assets/sounds/step_0.wav"),
 			FlxG.sound.load("assets/sounds/step_1.wav")
 		];
+		collideSound = FlxG.sound.load("assets/sounds/collide.wav");
 	}
 
 	override public function update(elapsed:Float):Void
@@ -120,13 +122,20 @@ class Player extends FlxSprite
 				interact();
 			}
 
-			if ((dx != 0 || dy != 0) && !isBlocked(midPoint.add(dx, dy)))
+			if (dx != 0 || dy != 0)
 			{
-				moveSpeed = (_shift ? SPEED_RUN : SPEED_WALK);
-				currentState = (_shift ? PlayerState.Running : PlayerState.Walking);
-				playStepSound();
-				new FlxTimer().start(1 / moveSpeed, (_) -> playStepSound(), 3);
-				move();
+				if (!isBlocked(midPoint.add(dx, dy)))
+				{
+					moveSpeed = (_shift ? SPEED_RUN : SPEED_WALK);
+					currentState = (_shift ? PlayerState.Running : PlayerState.Walking);
+					playStepSound();
+					new FlxTimer().start(1 / moveSpeed, (_) -> playStepSound(), 3);
+					move();
+				}
+				else
+				{
+					collideSound.play();
+				}
 			}
 		}
 	}
@@ -179,6 +188,7 @@ class Player extends FlxSprite
 				case FlxObject.RIGHT:
 					x += 4;
 			}
+			Global.stepsTaken++;
 			new FlxTimer().start(1 / moveSpeed, (_) -> move(), 1);
 		}
 		else
