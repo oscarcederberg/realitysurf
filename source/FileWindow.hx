@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
+import flixel.system.FlxSound;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import openfl.ui.Keyboard;
@@ -48,6 +49,11 @@ class FileWindow extends FlxSprite
 	var mouseOffsetX:Int;
 	var mouseOffsetY:Int;
 
+	var openSound:FlxSound;
+	var dragSound:FlxSound;
+	var dropSound:FlxSound;
+	var closeSound:FlxSound;
+
 	public function new(x:Float, y:Float, width:Int, height:Int, handler:FileWindowHandler)
 	{
 		super(x, y);
@@ -89,12 +95,20 @@ class FileWindow extends FlxSprite
 		stamp(TILE_BR, x2, y2);
 
 		// COLLISION BOXES
-		hitboxWindow = new Hitbox(this, 0, 0, widthInPixels, heightInPixels);
-		hitboxWindow.scrollFactor.set(0, 0);
-		hitboxBar = new Hitbox(this, 0, 0, widthInPixels, OFFSET_BAR);
-		hitboxBar.scrollFactor.set(0, 0);
-		hitboxClose = new Hitbox(this, widthInPixels - OFFSET_BAR, 0, OFFSET_BAR, OFFSET_BAR);
-		hitboxClose.scrollFactor.set(0, 0);
+		this.hitboxWindow = new Hitbox(this, 0, 0, widthInPixels, heightInPixels);
+		this.hitboxWindow.scrollFactor.set(0, 0);
+		this.hitboxBar = new Hitbox(this, 0, 0, widthInPixels, OFFSET_BAR);
+		this.hitboxBar.scrollFactor.set(0, 0);
+		this.hitboxClose = new Hitbox(this, widthInPixels - OFFSET_BAR, 0, OFFSET_BAR, OFFSET_BAR);
+		this.hitboxClose.scrollFactor.set(0, 0);
+
+		// SOUNDS
+		this.openSound = FlxG.sound.load("assets/sounds/open.wav");
+		this.dragSound = FlxG.sound.load("assets/sounds/drag.wav");
+		this.dropSound = FlxG.sound.load("assets/sounds/drop.wav");
+		this.closeSound = FlxG.sound.load("assets/sounds/close.wav");
+
+		openSound.play();
 	}
 
 	override public function update(elapsed:Float):Void
@@ -106,6 +120,7 @@ class FileWindow extends FlxSprite
 			handleDragging();
 		}
 
+		// CLAMP WINDOW POSITION
 		x = Math.min(Math.max(x, 0), FlxG.width - widthInPixels);
 		y = Math.min(Math.max(y, Global.CELL_SIZE), FlxG.height - Global.CELL_SIZE - widthInPixels);
 
@@ -116,6 +131,8 @@ class FileWindow extends FlxSprite
 
 	override public function kill():Void
 	{
+		closeSound.play();
+
 		super.kill();
 		hitboxWindow.kill();
 		hitboxBar.kill();
@@ -124,10 +141,12 @@ class FileWindow extends FlxSprite
 
 	public function activateDragging():Void
 	{
-		var _mouse_point:FlxPoint = FlxG.mouse.getPositionInCameraView();
+		dragSound.play();
 
-		mouseOffsetX = Std.int(_mouse_point.x - x); // offset wrong?
-		mouseOffsetY = Std.int(_mouse_point.y - y); // offset wrong?
+		var _mouse_point:FlxPoint = FlxG.mouse.getScreenPosition();
+
+		mouseOffsetX = Std.int(_mouse_point.x - x);
+		mouseOffsetY = Std.int(_mouse_point.y - y);
 		currentState = FileWindowState.Dragging;
 	}
 
@@ -142,6 +161,7 @@ class FileWindow extends FlxSprite
 		}
 		else
 		{
+			dropSound.play();
 			currentState = FileWindowState.Idle;
 		}
 	}

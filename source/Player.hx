@@ -55,7 +55,7 @@ class Player extends FlxSprite
 		animation.add("move_right", [16, 17, 18, 19], moveSpeed);
 		animation.play("idle_down");
 
-		// SFX
+		// SOUNDS
 		stepIndex = 0;
 		stepSounds = [
 			FlxG.sound.load("assets/sounds/step_0.wav"),
