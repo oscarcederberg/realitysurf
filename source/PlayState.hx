@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.util.FlxSort;
+import source.files.BaseFile;
 
 class PlayState extends FlxState
 {
@@ -42,7 +43,7 @@ class PlayState extends FlxState
 		level.entities.sort((_, obj1, obj2) -> FlxSort.byValues(FlxSort.ASCENDING, obj1.y + obj1.height, obj2.y + obj2.height));
 	}
 
-	public function createWindow(file:File)
+	public function createWindow(file:BaseFile)
 	{
 		windowHandler.createWindow(file);
 	}

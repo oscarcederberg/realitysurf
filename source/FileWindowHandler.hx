@@ -1,9 +1,12 @@
+package;
+
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRandom;
 import haxe.ds.GenericStack;
+import source.files.BaseFile;
 
 class FileWindowHandler
 {
@@ -69,7 +72,7 @@ class FileWindowHandler
 		windows.members.sort(function(w1, w2) return w2.depth - w1.depth);
 	}
 
-	public function createWindow(file:File):Void
+	public function createWindow(file:BaseFile):Void
 	{
 		var windowWidth:Int = file.windowWidth;
 		var windowHeight:Int = file.windowHeight;

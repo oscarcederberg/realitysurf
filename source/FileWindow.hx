@@ -1,13 +1,10 @@
 package;
 
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import flixel.system.FlxSound;
-import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-import openfl.ui.Keyboard;
 
 enum FileWindowState
 {

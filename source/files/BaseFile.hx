@@ -1,14 +1,10 @@
-package;
+package files;
 
+import files.FileFactory;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
-enum FileType
-{
-	Text;
-}
-
-class File extends FlxSprite
+abstract class BaseFile extends FlxSprite
 {
 	static inline final OFFSET_Y:Int = -8;
 	static inline final AMP_Y:Int = 2;
@@ -36,22 +32,6 @@ class File extends FlxSprite
 		super(x, start_y);
 
 		this.parent = cast(FlxG.state);
-
-		this.fileName = values.name;
-		this.fileData = values.data;
-		this.windowWidth = Std.parseInt(values.width);
-		this.windowHeight = Std.parseInt(values.height);
-		try
-		{
-			this.fileType = FileType.createByName(values.type);
-		}
-		catch (e)
-		{
-			this.fileType = FileType.Text;
-		}
-
-		// GRAPHICS
-		loadGraphic("assets/images/file.png", false, Global.CELL_SIZE, Global.CELL_SIZE);
 	}
 
 	public override function update(elapsed:Float)
