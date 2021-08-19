@@ -1,4 +1,4 @@
-package;
+package windows;
 
 import files.BaseFile;
 import flixel.FlxG;
@@ -8,17 +8,17 @@ import flixel.math.FlxPoint;
 import flixel.math.FlxRandom;
 import haxe.ds.GenericStack;
 
-class FileWindowHandler
+class WindowHandler
 {
 	public var random:FlxRandom;
-	public var windows:FlxTypedSpriteGroup<FileWindow>;
-	public var stack:GenericStack<FileWindow>;
+	public var windows:FlxTypedSpriteGroup<BaseWindow>;
+	public var stack:GenericStack<BaseWindow>;
 
 	public function new()
 	{
 		this.random = new FlxRandom();
-		this.windows = new FlxTypedSpriteGroup<FileWindow>();
-		this.stack = new GenericStack<FileWindow>();
+		this.windows = new FlxTypedSpriteGroup<BaseWindow>();
+		this.stack = new GenericStack<BaseWindow>();
 		this.windows.scrollFactor.set(0, 0);
 	}
 
@@ -76,18 +76,18 @@ class FileWindowHandler
 	{
 		var windowWidth:Int = file.windowWidth;
 		var windowHeight:Int = file.windowHeight;
-		var windowX:Int = random.int(0, FlxG.width - Global.CELL_SIZE * (windowWidth + 2) + (FileWindow.OFFSET_SIDE * 2));
+		var windowX:Int = random.int(0, FlxG.width - Global.CELL_SIZE * (windowWidth + 2) + (BaseWindow.OFFSET_SIDE * 2));
 		var windowY:Int = random.int(Global.CELL_SIZE,
-			FlxG.height - Global.CELL_SIZE * (windowHeight + 2) - (FileWindow.OFFSET_TOP + FileWindow.OFFSET_BOTTOM));
+			FlxG.height - Global.CELL_SIZE * (windowHeight + 2) - (BaseWindow.OFFSET_TOP + BaseWindow.OFFSET_BOTTOM));
 
-		var window:FileWindow = new FileWindow(windowX, windowY, windowWidth, windowHeight, this);
+		var window:BaseWindow = new BaseWindow(windowX, windowY, windowWidth, windowHeight, this);
 		windows.add(window);
 		stack.add(window);
 
 		sortWindows();
 	}
 
-	public function deleteWindow(window:FileWindow)
+	public function deleteWindow(window:BaseWindow)
 	{
 		stack.remove(window);
 		window.kill();
@@ -95,7 +95,7 @@ class FileWindowHandler
 		sortWindows();
 	}
 
-	public function setWindowAsActive(window:FileWindow)
+	public function setWindowAsActive(window:BaseWindow)
 	{
 		stack.remove(window);
 		stack.add(window);
@@ -103,7 +103,7 @@ class FileWindowHandler
 		sortWindows();
 	}
 
-	public function isWindowActive(window:FileWindow):Bool
+	public function isWindowActive(window:BaseWindow):Bool
 	{
 		return stack.first() == window;
 	}

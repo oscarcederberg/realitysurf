@@ -4,12 +4,12 @@ import files.BaseFile;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.util.FlxSort;
+import windows.WindowHandler;
 
 class PlayState extends FlxState
 {
 	public var level:LevelMap;
-
-	public var windowHandler:FileWindowHandler;
+	public var windowHandler:WindowHandler;
 	public var hud:HUD;
 
 	override public function create()
@@ -17,7 +17,7 @@ class PlayState extends FlxState
 		this.bgColor = Global.RGB_BLACK;
 		this.level = new LevelMap("level_dev.json");
 		this.hud = new HUD();
-		this.windowHandler = new FileWindowHandler();
+		this.windowHandler = new WindowHandler();
 
 		FlxG.camera.follow(level.player, LOCKON, 0.1);
 		FlxG.camera.snapToTarget();

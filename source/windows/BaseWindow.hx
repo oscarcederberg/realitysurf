@@ -1,4 +1,4 @@
-package;
+package windows;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -12,7 +12,7 @@ enum FileWindowState
 	Dragging;
 }
 
-class FileWindow extends FlxSprite
+class BaseWindow extends FlxSprite
 {
 	public static inline final OFFSET_TOP:Int = 6;
 	public static inline final OFFSET_SIDE:Int = 9;
@@ -36,7 +36,7 @@ class FileWindow extends FlxSprite
 	public var hitboxBar:Hitbox;
 	public var hitboxClose:Hitbox;
 
-	var handler:FileWindowHandler;
+	var handler:WindowHandler;
 
 	var widthInTiles:Int;
 	var heightInTiles:Int;
@@ -51,7 +51,7 @@ class FileWindow extends FlxSprite
 	var dropSound:FlxSound;
 	var closeSound:FlxSound;
 
-	public function new(x:Float, y:Float, width:Int, height:Int, handler:FileWindowHandler)
+	public function new(x:Float, y:Float, width:Int, height:Int, handler:WindowHandler)
 	{
 		super(x, y);
 		this.depth = 0;
