@@ -51,7 +51,7 @@
           "y": 96,
           "originX": 0,
           "originY": 0,
-          "values": {"name": "test", "type": "text", "data": "AaAa", "height": 8, "width": 8}
+          "values": {"name": "test", "type": "Text", "data": "AaAa", "height": 8, "width": 8}
         }
       ]
     }

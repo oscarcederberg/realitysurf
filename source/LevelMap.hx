@@ -21,6 +21,7 @@ class LevelMap
 	{
 		this.map = new FlxOgmo3Loader("assets/data/REALITYSURF.ogmo", "assets/data/" + file);
 		this.tilemap = map.loadTilemap("assets/data/OGMO/tiles.png", "tiles");
+		this.filefactory = new FileFactory();
 
 		this.tiles = new FlxTypedSpriteGroup<Tile>();
 		this.files = new FlxTypedSpriteGroup<BaseFile>();
@@ -72,11 +73,10 @@ class LevelMap
 		{
 			case "file":
 				var values = entity.values;
-				trace(values);
-				// var file:File = new File(real_x, real_y, values);
+				var file:BaseFile = filefactory.newFile(real_x, real_y, values);
 
-				// files.add(file);
-				// entities.add(file);
+				files.add(file);
+				entities.add(file);
 		}
 	}
 }

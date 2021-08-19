@@ -8,7 +8,9 @@ enum FileType
 
 class FileFactory
 {
-	public function newFile(x:Float, y:Float, values:Null<Dynamic>):BaseFile
+	public function new() {};
+
+	public function newFile(x:Float, y:Float, values:Dynamic):BaseFile
 	{
 		var fileType = FileType.createByName(values.type);
 

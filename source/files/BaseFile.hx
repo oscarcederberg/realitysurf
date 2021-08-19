@@ -1,5 +1,6 @@
 package files;
 
+import files.FileFactory.FileType;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
@@ -20,8 +21,9 @@ abstract class BaseFile extends FlxSprite
 	public var fileData:String;
 	public var windowWidth:Int;
 	public var windowHeight:Int;
+	public var fileType:FileType;
 
-	public function new(x:Float, y:Float, values:Null<Dynamic>)
+	public function new(x:Float, y:Float, values:Dynamic)
 	{
 		this.start_y = y + OFFSET_Y;
 		this.phase_y = Std.int(y % Global.CELL_SIZE + x % Global.CELL_SIZE);
@@ -30,6 +32,11 @@ abstract class BaseFile extends FlxSprite
 		super(x, start_y);
 
 		this.parent = cast(FlxG.state);
+
+		this.fileName = values.name;
+		this.fileData = values.data;
+		this.windowWidth = Std.parseInt(values.width);
+		this.windowHeight = Std.parseInt(values.height);
 	}
 
 	public override function update(elapsed:Float)
