@@ -1,10 +1,10 @@
 package;
 
+import files.BaseFile;
 import files.FileFactory;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.group.FlxSpriteGroup;
 import flixel.tile.FlxTilemap;
-import source.files.BaseFile;
 
 class LevelMap
 {

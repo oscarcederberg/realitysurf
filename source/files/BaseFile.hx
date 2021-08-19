@@ -1,6 +1,5 @@
 package files;
 
-import files.FileFactory;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
@@ -18,7 +17,6 @@ abstract class BaseFile extends FlxSprite
 	var parent:PlayState;
 
 	public var fileName:String;
-	public var fileType:FileType;
 	public var fileData:String;
 	public var windowWidth:Int;
 	public var windowHeight:Int;

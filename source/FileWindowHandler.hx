@@ -1,12 +1,12 @@
 package;
 
+import files.BaseFile;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRandom;
 import haxe.ds.GenericStack;
-import source.files.BaseFile;
 
 class FileWindowHandler
 {

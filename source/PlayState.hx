@@ -1,9 +1,9 @@
 package;
 
+import files.BaseFile;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.util.FlxSort;
-import source.files.BaseFile;
 
 class PlayState extends FlxState
 {
