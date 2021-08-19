@@ -16,10 +16,10 @@ enum PlayerState
 
 class Player extends FlxSprite
 {
-	static final STEPS:Int = 4;
-	static final SPEED_WALK:Int = 6;
-	static final SPEED_RUN:Int = 8;
-	static final OFFSET_Y:Int = 6;
+	public static inline final STEPS:Int = 4;
+	public static inline final SPEED_WALK:Int = 6;
+	public static inline final SPEED_RUN:Int = 8;
+	public static inline final OFFSET_Y:Int = 6;
 
 	var parent:PlayState;
 
@@ -29,7 +29,7 @@ class Player extends FlxSprite
 	var midPoint:FlxPoint;
 
 	var stepSounds:Array<FlxSound>;
-	private var stepIndex:Int;
+	var stepIndex:Int;
 	var collideSound:FlxSound;
 
 	public function new(x:Float, y:Float)
@@ -224,6 +224,7 @@ class Player extends FlxSprite
 
 	private function isBlocked(point:FlxPoint):Bool
 	{
+		// NOTE: Do we have to check through collisions? 2D-structure instead maybe?
 		return !parent.level.tiles.overlapsPoint(point) || parent.level.files.overlapsPoint(point);
 	}
 

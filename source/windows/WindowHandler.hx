@@ -68,7 +68,7 @@ class WindowHandler
 			window.depth = index;
 			index++;
 		}
-
+		// NOTE: Is this necessary? Only one window is moved at a time.
 		windows.members.sort(function(w1, w2) return w2.depth - w1.depth);
 	}
 

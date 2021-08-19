@@ -20,7 +20,13 @@ class BaseWindow extends FlxSprite
 	public static inline final OFFSET_BAR:Int = 7;
 
 	public var depth:Int;
+	public var currentState:FileWindowState;
+	public var hitboxWindow:Hitbox;
+	public var hitboxBar:Hitbox;
+	public var hitboxClose:Hitbox;
 
+	// NOTE: No actualy need to create these each time we create a window!
+	// NOTE: Is it possible to stamp the bitmap directly, instead through sprites?
 	var TILE_TL:FlxSprite = new FlxSprite("assets/images/box/box_1_tl.png");
 	var TILE_TM:FlxSprite = new FlxSprite("assets/images/box/box_1_tm.png");
 	var TILE_TR:FlxSprite = new FlxSprite("assets/images/box/box_1_tr.png");
@@ -30,11 +36,6 @@ class BaseWindow extends FlxSprite
 	var TILE_BL:FlxSprite = new FlxSprite("assets/images/box/box_1_bl.png");
 	var TILE_BM:FlxSprite = new FlxSprite("assets/images/box/box_1_bm.png");
 	var TILE_BR:FlxSprite = new FlxSprite("assets/images/box/box_1_br.png");
-
-	public var currentState:FileWindowState;
-	public var hitboxWindow:Hitbox;
-	public var hitboxBar:Hitbox;
-	public var hitboxClose:Hitbox;
 
 	var handler:WindowHandler;
 
