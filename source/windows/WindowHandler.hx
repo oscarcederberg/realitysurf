@@ -1,6 +1,6 @@
 package windows;
 
-import files.BaseFile;
+import files.*;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.group.FlxSpriteGroup;
@@ -80,7 +80,16 @@ class WindowHandler
 		var windowY:Int = random.int(Global.CELL_SIZE,
 			FlxG.height - Global.CELL_SIZE * (windowHeight + 2) - (BaseWindow.OFFSET_TOP + BaseWindow.OFFSET_BOTTOM));
 
-		var window:BaseWindow = new BaseWindow(windowX, windowY, windowWidth, windowHeight, this);
+		var window:BaseWindow = switch (file.fileType)
+		{
+			case Text:
+				new BaseWindow(windowX, windowY, windowWidth, windowHeight, this);
+			case Image:
+				new BaseWindow(windowX, windowY, windowWidth, windowHeight, this);
+			default:
+				new BaseWindow(windowX, windowY, windowWidth, windowHeight, this);
+		}
+
 		windows.add(window);
 		stack.add(window);
 

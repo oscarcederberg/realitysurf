@@ -19,7 +19,7 @@ class FileFactory
 			case Text:
 				return new TextFile(x, y, values);
 			case Image:
-				return new TextFile(x, y, values);
+				return new ImageFile(x, y, values);
 			default:
 				return new TextFile(x, y, values);
 		}

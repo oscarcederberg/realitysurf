@@ -5,6 +5,7 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import flixel.system.FlxSound;
+import flixel.util.FlxDirectionFlags;
 import flixel.util.FlxTimer;
 
 enum PlayerState
@@ -39,7 +40,7 @@ class Player extends FlxSprite
 		this.parent = cast(FlxG.state);
 
 		this.currentState = PlayerState.Idle;
-		this.facing = FlxObject.DOWN;
+		this.facing = FlxDirectionFlags.DOWN;
 		this.stepsLeft = STEPS;
 		this.moveSpeed = SPEED_WALK;
 		this.midPoint = new FlxPoint(x + Global.CELL_SIZE / 2, y + Global.CELL_SIZE + OFFSET_Y);
@@ -100,22 +101,22 @@ class Player extends FlxSprite
 			if (_up)
 			{
 				dy = -Global.CELL_SIZE;
-				facing = FlxObject.UP;
+				facing = FlxDirectionFlags.UP;
 			}
 			else if (_left)
 			{
 				dx = -Global.CELL_SIZE;
-				facing = FlxObject.LEFT;
+				facing = FlxDirectionFlags.LEFT;
 			}
 			else if (_down)
 			{
 				dy = Global.CELL_SIZE;
-				facing = FlxObject.DOWN;
+				facing = FlxDirectionFlags.DOWN;
 			}
 			else if (_right)
 			{
 				dx = Global.CELL_SIZE;
-				facing = FlxObject.RIGHT;
+				facing = FlxDirectionFlags.RIGHT;
 			}
 			else if (_action)
 			{
@@ -147,26 +148,28 @@ class Player extends FlxSprite
 			case Idle:
 				switch (facing)
 				{
-					case FlxObject.UP:
+					case FlxDirectionFlags.UP:
 						animation.play("idle_up");
-					case FlxObject.LEFT:
+					case FlxDirectionFlags.LEFT:
 						animation.play("idle_left");
-					case FlxObject.DOWN:
+					case FlxDirectionFlags.DOWN:
 						animation.play("idle_down");
-					case FlxObject.RIGHT:
+					case FlxDirectionFlags.RIGHT:
 						animation.play("idle_right");
+					default:
 				}
 			case Walking | Running:
 				switch (facing)
 				{
-					case FlxObject.UP:
+					case FlxDirectionFlags.UP:
 						animation.play("move_up");
-					case FlxObject.LEFT:
+					case FlxDirectionFlags.LEFT:
 						animation.play("move_left");
-					case FlxObject.DOWN:
+					case FlxDirectionFlags.DOWN:
 						animation.play("move_down");
-					case FlxObject.RIGHT:
+					case FlxDirectionFlags.RIGHT:
 						animation.play("move_right");
+					default:
 				}
 				animation.curAnim.frameRate = moveSpeed;
 		}
@@ -179,14 +182,15 @@ class Player extends FlxSprite
 			stepsLeft--;
 			switch (facing)
 			{
-				case FlxObject.UP:
+				case FlxDirectionFlags.UP:
 					y -= 4;
-				case FlxObject.LEFT:
+				case FlxDirectionFlags.LEFT:
 					x -= 4;
-				case FlxObject.DOWN:
+				case FlxDirectionFlags.DOWN:
 					y += 4;
-				case FlxObject.RIGHT:
+				case FlxDirectionFlags.RIGHT:
 					x += 4;
+				default:
 			}
 			Global.stepsTaken++;
 			new FlxTimer().start(1 / moveSpeed, (_) -> move(), 1);
@@ -202,14 +206,15 @@ class Player extends FlxSprite
 		var dx = 0, dy = 0;
 		switch (facing)
 		{
-			case FlxObject.UP:
+			case FlxDirectionFlags.UP:
 				dy = -Global.CELL_SIZE;
-			case FlxObject.LEFT:
+			case FlxDirectionFlags.LEFT:
 				dx = -Global.CELL_SIZE;
-			case FlxObject.DOWN:
+			case FlxDirectionFlags.DOWN:
 				dy = Global.CELL_SIZE;
-			case FlxObject.RIGHT:
+			case FlxDirectionFlags.RIGHT:
 				dx = Global.CELL_SIZE;
+			default:
 		}
 		var point:FlxPoint = midPoint.add(dx, dy);
 
