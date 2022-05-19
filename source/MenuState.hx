@@ -10,8 +10,8 @@ class MenuState extends FlxState
 
 	override public function create()
 	{
-		playButton = new FlxButton(0, 8 * 192 / 16, "REALITYSURF", clickPlay);
-		playButton.screenCenter(X);
+		playButton = new FlxButton(0, 0, "PLAY", clickPlay);
+		playButton.screenCenter(XY);
 		add(playButton);
 
 		super.create();
