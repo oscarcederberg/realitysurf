@@ -22,40 +22,47 @@ class WindowHandler
 		this.windows.scrollFactor.set(0, 0);
 	}
 
+	
+	private function handleClick(window:BaseWindow, point:FlxPoint):Bool
+	{
+		var hitboxWindow:FlxObject = window.hitboxWindow;
+		var hitboxBar:FlxObject = window.hitboxBar;
+		var hitboxClose:FlxObject = window.hitboxClose;
+		
+		if (hitboxClose.overlapsPoint(point))
+		{
+			deleteWindow(window);
+			return true;
+		}
+		
+		if (hitboxBar.overlapsPoint(point))
+		{
+			window.activateDragging();
+			if (!isWindowActive(window))
+				setWindowAsActive(window);
+			return true;
+		}
+		
+		if (hitboxWindow.overlapsPoint(point))
+		{
+			if (!isWindowActive(window))
+				setWindowAsActive(window);
+			return true;
+		}
+
+		return false;
+	}
+
 	public function update(elapsed:Float):Void
 	{
 		var _click:Bool = FlxG.mouse.justPressed;
-		var _mouse_point:FlxPoint = FlxG.mouse.getPositionInCameraView();
+		var _point:FlxPoint = FlxG.mouse.getPositionInCameraView();
 
 		if (_click)
 		{
 			for (window in stack)
 			{
-				var hitboxWindow:FlxObject = window.hitboxWindow;
-				var hitboxBar:FlxObject = window.hitboxBar;
-				var hitboxClose:FlxObject = window.hitboxClose;
-
-				if (hitboxWindow.overlapsPoint(_mouse_point))
-				{
-					if (hitboxClose.overlapsPoint(_mouse_point))
-					{
-						deleteWindow(window);
-						break;
-					}
-					else if (hitboxBar.overlapsPoint(_mouse_point))
-					{
-						window.activateDragging();
-						if (!isWindowActive(window))
-							setWindowAsActive(window);
-						break;
-					}
-					else
-					{
-						if (!isWindowActive(window))
-							setWindowAsActive(window);
-						break;
-					}
-				}
+				if (handleClick(window, _point)) break;
 			}
 		}
 	}
@@ -83,11 +90,9 @@ class WindowHandler
 		var window:BaseWindow = switch (file.fileType)
 		{
 			case Text:
-				new BaseWindow(windowX, windowY, windowWidth, windowHeight, this);
+				new TextWindow(windowX, windowY, windowWidth, windowHeight, this, file.fileData);
 			case Image:
-				new BaseWindow(windowX, windowY, windowWidth, windowHeight, this);
-			default:
-				new BaseWindow(windowX, windowY, windowWidth, windowHeight, this);
+				new ImageWindow(windowX, windowY, windowWidth, windowHeight, this, "assets/images/pictures/" + file.fileData);
 		}
 
 		windows.add(window);

@@ -14,6 +14,7 @@ class Hitbox extends FlxObject
 		this.parent = parent;
 		this.relativeX = relativeX;
 		this.relativeY = relativeY;
+
 		super(parent.x + relativeX, parent.y + relativeY, width, height);
 	}
 

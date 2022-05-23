@@ -1,6 +1,6 @@
 {
   "name": "REALITYSURF",
-  "ogmoVersion": "3.3.0",
+  "ogmoVersion": "3.4.0",
   "levelPaths": ["."],
   "backgroundColor": "#282c34ff",
   "gridColor": "#3c4049cc",
@@ -11,20 +11,28 @@
   "levelMinSize": {"x": 256, "y": 192},
   "levelMaxSize": {"x": 4096, "y": 4096},
   "levelValues": [
-    {"name": "name", "definition": "Text", "defaults": ""}
+    {"name": "name", "definition": "Text", "display": 0, "defaults": ""}
   ],
   "defaultExportMode": ".json",
   "compactExport": false,
   "externalScript": "",
   "playCommand": "",
-  "entityTags": ["entities", "files"],
+  "entityTags": ["file", "entity"],
   "layers": [
     {
       "definition": "entity",
       "name": "entities",
       "gridSize": {"x": 16, "y": 16},
       "exportID": "81771223",
-      "requiredTags": ["entities"],
+      "requiredTags": ["entity"],
+      "excludedTags": []
+    },
+    {
+      "definition": "entity",
+      "name": "files",
+      "gridSize": {"x": 16, "y": 16},
+      "exportID": "85069518",
+      "requiredTags": ["file"],
       "excludedTags": []
     },
     {
@@ -35,14 +43,6 @@
       "exportMode": 0,
       "arrayMode": 0,
       "defaultTileset": "tiles"
-    },
-    {
-      "definition": "entity",
-      "name": "files",
-      "gridSize": {"x": 16, "y": 16},
-      "exportID": "85069518",
-      "requiredTags": ["files"],
-      "excludedTags": []
     }
   ],
   "entities": [
@@ -79,7 +79,7 @@
       "nodeLimit": 0,
       "nodeDisplay": 0,
       "nodeGhost": true,
-      "tags": ["entities"],
+      "tags": ["entity"],
       "values": [],
       "texture": "ogmo/player.png",
       "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgCAYAAAAbifjMAAAAAXNSR0IArs4c6QAAAIVJREFUSIljYBjygBFdQEFB4T8+DQ8ePEDRg8KBaXZeooZV896YWxiGMKErwqUZlxyGAaSCUQOwGACLKmwAmxzehASLNmSN6AkJpxeQ4xxf2sBqADYNuAxBMYBQPsCmZjQpD08DSM0LKAagp/O9MbcwNBGdF4gFg8yAoZmZsFZthAByVAIAV2A3KWpfpk4AAAAASUVORK5CYII="
@@ -117,24 +117,25 @@
       "nodeLimit": 0,
       "nodeDisplay": 0,
       "nodeGhost": true,
-      "tags": ["files"],
+      "tags": ["file"],
       "values": [
-        {"name": "name", "definition": "String", "defaults": "", "maxLength": 0, "trimWhitespace": true},
+        {"name": "name", "definition": "String", "display": 1, "defaults": "", "maxLength": 0, "trimWhitespace": true},
         {
           "name": "type",
           "definition": "Enum",
-          "choices": ["text"],
+          "display": 1,
+          "choices": ["Text", "Image"],
           "defaults": 0
         },
-        {"name": "data", "definition": "String", "defaults": "This is empty", "maxLength": 0, "trimWhitespace": true},
-        {"name": "height", "definition": "Integer", "defaults": 0, "bounded": false, "min": 0, "max": 100},
-        {"name": "width", "definition": "Integer", "defaults": 0, "bounded": false, "min": 0, "max": 100}
+        {"name": "data", "definition": "String", "display": 1, "defaults": "This is empty", "maxLength": 0, "trimWhitespace": true},
+        {"name": "height", "definition": "Integer", "display": 1, "defaults": 0, "bounded": false, "min": 0, "max": 100},
+        {"name": "width", "definition": "Integer", "display": 1, "defaults": 0, "bounded": false, "min": 0, "max": 100}
       ],
       "texture": "ogmo/file.png",
       "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAF9JREFUOI1jYKAQMMIYCgoK/4nR8ODBA0ZkPooBzkvUsGraG3OLwXmJGsPemFsYhjCR4lyYBciuJckAZENggIVYjTDnowOiDEC3Fdkwkr2ADkYNGAwGkJyZYAA9U5ENAA3oGoqc6eRRAAAAAElFTkSuQmCC"
     }
   ],
   "tilesets": [
-    {"label": "tiles", "path": "ogmo/tiles.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAAAXNSR0IArs4c6QAAAE1JREFUSIljZKAQKCgo/KdEPwulDmBgYGBwXqJGlr69Mbeo4wCYYaQAmKOZqOUAcsGoA0YdMOqAUQdQrSQktzge8BAYcAcwUmoApdUxAArYCfCbLpGsAAAAAElFTkSuQmCC", "tileWidth": 16, "tileHeight": 16, "tileSeparationX": 0, "tileSeparationY": 0}
+    {"label": "tiles", "path": "ogmo/tiles.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAAAXNSR0IArs4c6QAAAE1JREFUSIljZKAQKCgo/KdEPwulDmBgYGBwXqJGlr69Mbeo4wCYYaQAmKOZqOUAcsGoA0YdMOqAUQdQrSQktzge8BAYcAcwUmoApdUxAArYCfCbLpGsAAAAAElFTkSuQmCC", "tileWidth": 16, "tileHeight": 16, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0}
   ]
 }

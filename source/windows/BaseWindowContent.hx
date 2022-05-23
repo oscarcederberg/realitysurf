@@ -15,5 +15,10 @@ abstract class BaseWindowContent extends FlxSprite
 		this.relativeY = relativeY;
 
 		super(parent.x + relativeX, parent.y + relativeY);
-	};
+	}
+
+	override public function update(elapsed:Float):Void
+	{
+		setPosition(parent.x + relativeX, parent.y + relativeY);
+	}
 }
