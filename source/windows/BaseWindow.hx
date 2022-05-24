@@ -1,5 +1,6 @@
 package windows;
 
+import utils.Hitbox;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;

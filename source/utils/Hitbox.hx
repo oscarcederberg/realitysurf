@@ -1,4 +1,4 @@
-package;
+package utils;
 
 import utils.AttachableObject;
 import flixel.FlxObject;
