@@ -11,4 +11,5 @@ class Global
 	public static final RGB_BLACK:FlxColor = FlxColor.fromRGB(32, 32, 32, 255);
 
 	public static var stepsTaken:Int = 0;
+	public static var levelAssetsPath:String = "blah";
 }

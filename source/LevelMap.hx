@@ -12,6 +12,7 @@ class LevelMap
 	var tilemap:FlxTilemap;
 	var filefactory:FileFactory;
 
+	public var name:String;
 	public var player:Player;
 	public var tiles:FlxTypedSpriteGroup<Tile>;
 	public var files:FlxTypedSpriteGroup<BaseFile>;
@@ -20,6 +21,7 @@ class LevelMap
 	public function new(file:String)
 	{
 		this.map = new FlxOgmo3Loader("assets/data/REALITYSURF.ogmo", "assets/data/" + file);
+		this.name = Std.string(map.getLevelValue("name"));
 		this.tilemap = map.loadTilemap("assets/data/OGMO/tiles.png", "tiles");
 		this.filefactory = new FileFactory();
 
@@ -30,6 +32,8 @@ class LevelMap
 		placeTiles();
 		this.map.loadEntities(placeEntities, "entities");
 		this.map.loadEntities(placeFiles, "files");
+
+		Global.levelAssetsPath = "assets/levels/" + this.name + "/";
 	}
 
 	public function placeTiles()

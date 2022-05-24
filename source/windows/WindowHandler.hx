@@ -89,9 +89,9 @@ class WindowHandler
 		var window:BaseWindow = switch (file.fileType)
 		{
 			case Text:
-				new TextWindow(windowX, windowY, windowWidth, windowHeight, this, file.fileData);
+				new TextWindow(windowX, windowY, windowWidth, windowHeight, this, Global.levelAssetsPath + file.fileData);
 			case Image:
-				new ImageWindow(windowX, windowY, windowWidth, windowHeight, this, "assets/images/pictures/" + file.fileData);
+				new ImageWindow(windowX, windowY, windowWidth, windowHeight, this, Global.levelAssetsPath + file.fileData);
 		}
 
 		windows.add(window);

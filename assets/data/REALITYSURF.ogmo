@@ -11,7 +11,7 @@
   "levelMinSize": {"x": 256, "y": 192},
   "levelMaxSize": {"x": 4096, "y": 4096},
   "levelValues": [
-    {"name": "name", "definition": "Text", "display": 0, "defaults": ""}
+    {"name": "name", "definition": "String", "display": 0, "defaults": "null", "maxLength": 0, "trimWhitespace": true}
   ],
   "defaultExportMode": ".json",
   "compactExport": false,

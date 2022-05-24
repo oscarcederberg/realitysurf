@@ -2,10 +2,10 @@ package windows;
 
 class ImageWindowContent extends BaseWindowContent
 {
-	public function new(parent:BaseWindow, relativeX:Int, relativeY:Int, asset:String)
+	public function new(parent:BaseWindow, relativeX:Int, relativeY:Int, assetPath:String)
 	{
 		super(parent, relativeX, relativeY);
 		
-		loadGraphic(asset);
+		loadGraphic(assetPath);
 	}
 }
