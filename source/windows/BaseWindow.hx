@@ -21,17 +21,6 @@ abstract class BaseWindow extends FlxSprite
 	public static inline final OFFSET_CONTENT_X:Int = Global.CELL_SIZE - OFFSET_SIDE;
 	public static inline final OFFSET_CONTENT_Y:Int = Global.CELL_SIZE - OFFSET_TOP;
 	
-	// NOTE: Is it possible to stamp the bitmap directly, instead through sprites?
-	var TILE_TL:FlxSprite = new FlxSprite("assets/images/box/box_1_tl.png");
-	var TILE_TM:FlxSprite = new FlxSprite("assets/images/box/box_1_tm.png");
-	var TILE_TR:FlxSprite = new FlxSprite("assets/images/box/box_1_tr.png");
-	var TILE_ML:FlxSprite = new FlxSprite("assets/images/box/box_1_ml.png");
-	var TILE_MM:FlxSprite = new FlxSprite("assets/images/box/box_1_mm.png");
-	var TILE_MR:FlxSprite = new FlxSprite("assets/images/box/box_1_mr.png");
-	var TILE_BL:FlxSprite = new FlxSprite("assets/images/box/box_1_bl.png");
-	var TILE_BM:FlxSprite = new FlxSprite("assets/images/box/box_1_bm.png");
-	var TILE_BR:FlxSprite = new FlxSprite("assets/images/box/box_1_br.png");
-	
 	public var depth:Int;
 	public var currentState:FileWindowState;
 	public var hitboxWindow:Hitbox;
@@ -54,6 +43,55 @@ abstract class BaseWindow extends FlxSprite
 	var dropSound:FlxSound;
 	var closeSound:FlxSound;
 
+	private function makeWindowGraphic()
+	{
+		makeGraphic(widthInPixels, heightInPixels, FlxColor.TRANSPARENT);
+		
+		// NOTE: Is it possible to stamp the bitmap directly, instead through sprites?
+		var TILE_TL:FlxSprite = new FlxSprite("assets/images/box/box_1_tl.png");
+		var TILE_TM:FlxSprite = new FlxSprite("assets/images/box/box_1_tm.png");
+		var TILE_TR:FlxSprite = new FlxSprite("assets/images/box/box_1_tr.png");
+		var TILE_ML:FlxSprite = new FlxSprite("assets/images/box/box_1_ml.png");
+		var TILE_MM:FlxSprite = new FlxSprite("assets/images/box/box_1_mm.png");
+		var TILE_MR:FlxSprite = new FlxSprite("assets/images/box/box_1_mr.png");
+		var TILE_BL:FlxSprite = new FlxSprite("assets/images/box/box_1_bl.png");
+		var TILE_BM:FlxSprite = new FlxSprite("assets/images/box/box_1_bm.png");
+		var TILE_BR:FlxSprite = new FlxSprite("assets/images/box/box_1_br.png");
+
+		TILE_TM.scale.set(widthInTiles, 1);
+		TILE_ML.scale.set(1, heightInTiles);
+		TILE_MM.scale.set(widthInTiles, heightInTiles);
+		TILE_MR.scale.set(1, heightInTiles);
+		TILE_BM.scale.set(widthInTiles, 1);
+
+		var _x0:Int = -OFFSET_SIDE;
+		var _x1:Int = Std.int(Global.CELL_SIZE / 2) * (widthInTiles + 1) - OFFSET_SIDE;
+		var _x2:Int = Global.CELL_SIZE * (widthInTiles + 1) - OFFSET_SIDE;
+		var _y0:Int = -OFFSET_TOP;
+		var _y1:Int = Std.int(Global.CELL_SIZE / 2) * (heightInTiles + 1) - OFFSET_TOP;
+		var _y2:Int = Global.CELL_SIZE * (heightInTiles + 1) - OFFSET_TOP;
+
+		stamp(TILE_TL, _x0, _y0);
+		stamp(TILE_TM, _x1, _y0);
+		stamp(TILE_TR, _x2, _y0);
+		stamp(TILE_ML, _x0, _y1);
+		stamp(TILE_MM, _x1, _y1);
+		stamp(TILE_MR, _x2, _y1);
+		stamp(TILE_BL, _x0, _y2);
+		stamp(TILE_BM, _x1, _y2);
+		stamp(TILE_BR, _x2, _y2);
+		
+		TILE_TL.kill();
+		TILE_TM.kill();
+		TILE_TR.kill();
+		TILE_ML.kill();
+		TILE_MM.kill();
+		TILE_MR.kill();
+		TILE_BL.kill();
+		TILE_BM.kill();
+		TILE_BR.kill();		
+	}
+
 	public function new(x:Float, y:Float, width:Int, height:Int, handler:WindowHandler)
 	{
 		super(x, y);
@@ -70,30 +108,7 @@ abstract class BaseWindow extends FlxSprite
 		this.heightInPixels = Global.CELL_SIZE * (height + 2) - (OFFSET_TOP + OFFSET_BOTTOM);
 
 		// GRAPHICS
-		makeGraphic(widthInPixels, heightInPixels, FlxColor.TRANSPARENT);
-
-		TILE_TM.scale.set(width, 1);
-		TILE_ML.scale.set(1, height);
-		TILE_MM.scale.set(width, height);
-		TILE_MR.scale.set(1, height);
-		TILE_BM.scale.set(width, 1);
-
-		var _x0:Int = -OFFSET_SIDE;
-		var _x1:Int = Std.int(Global.CELL_SIZE / 2) * (width + 1) - OFFSET_SIDE;
-		var _x2:Int = Global.CELL_SIZE * (width + 1) - OFFSET_SIDE;
-		var _y0:Int = -OFFSET_TOP;
-		var _y1:Int = Std.int(Global.CELL_SIZE / 2) * (height + 1) - OFFSET_TOP;
-		var _y2:Int = Global.CELL_SIZE * (height + 1) - OFFSET_TOP;
-
-		stamp(TILE_TL, _x0, _y0);
-		stamp(TILE_TM, _x1, _y0);
-		stamp(TILE_TR, _x2, _y0);
-		stamp(TILE_ML, _x0, _y1);
-		stamp(TILE_MM, _x1, _y1);
-		stamp(TILE_MR, _x2, _y1);
-		stamp(TILE_BL, _x0, _y2);
-		stamp(TILE_BM, _x1, _y2);
-		stamp(TILE_BR, _x2, _y2);
+		makeWindowGraphic();
 
 		// COLLISION BOXES
 		this.hitboxWindow = new Hitbox(this, 0, 0, widthInPixels, heightInPixels);
@@ -142,6 +157,7 @@ abstract class BaseWindow extends FlxSprite
 		hitboxWindow.kill();
 		hitboxBar.kill();
 		hitboxClose.kill();
+		content.kill();
 	}
 
 	override public function draw():Void

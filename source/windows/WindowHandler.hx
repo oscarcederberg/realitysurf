@@ -21,7 +21,6 @@ class WindowHandler
 		this.stack = new GenericStack<BaseWindow>();
 		this.windows.scrollFactor.set(0, 0);
 	}
-
 	
 	private function handleClick(window:BaseWindow, point:FlxPoint):Bool
 	{

@@ -7,6 +7,6 @@ class ImageWindow extends BaseWindow
 		super(x, y, width, height, handler);
 		
 		this.content = new ImageWindowContent(this, BaseWindow.OFFSET_CONTENT_X, BaseWindow.OFFSET_CONTENT_Y, assetPath);
-		this.content.scrollFactor.set(0,0);
+		this.content.scrollFactor.set(0, 0);
 	}
 }
