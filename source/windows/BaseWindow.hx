@@ -30,11 +30,12 @@ abstract class BaseWindow extends FlxSprite
 	
 	var handler:WindowHandler;
 	var content:BaseWindowContent;
+	var scrollbar:Scrollbar;
 
 	public var widthInTiles:Int;
 	public var heightInTiles:Int;
-	var widthInPixels:Int;
-	var heightInPixels:Int;
+	public var widthInPixels:Int;
+	public var heightInPixels:Int;
 
 	var mouseOffsetX:Int;
 	var mouseOffsetY:Int;
@@ -49,21 +50,21 @@ abstract class BaseWindow extends FlxSprite
 		makeGraphic(widthInPixels, heightInPixels, FlxColor.TRANSPARENT);
 		
 		// NOTE: Is it possible to stamp the bitmap directly, instead through sprites?
-		var TILE_TL:FlxSprite = new FlxSprite("assets/images/box/box_1_tl.png");
-		var TILE_TM:FlxSprite = new FlxSprite("assets/images/box/box_1_tm.png");
-		var TILE_TR:FlxSprite = new FlxSprite("assets/images/box/box_1_tr.png");
-		var TILE_ML:FlxSprite = new FlxSprite("assets/images/box/box_1_ml.png");
-		var TILE_MM:FlxSprite = new FlxSprite("assets/images/box/box_1_mm.png");
-		var TILE_MR:FlxSprite = new FlxSprite("assets/images/box/box_1_mr.png");
-		var TILE_BL:FlxSprite = new FlxSprite("assets/images/box/box_1_bl.png");
-		var TILE_BM:FlxSprite = new FlxSprite("assets/images/box/box_1_bm.png");
-		var TILE_BR:FlxSprite = new FlxSprite("assets/images/box/box_1_br.png");
+		var _tileTL:FlxSprite = new FlxSprite("assets/images/box/box_1_tl.png");
+		var _tileTM:FlxSprite = new FlxSprite("assets/images/box/box_1_tm.png");
+		var _tileTR:FlxSprite = new FlxSprite("assets/images/box/box_1_tr.png");
+		var _tileML:FlxSprite = new FlxSprite("assets/images/box/box_1_ml.png");
+		var _tileMM:FlxSprite = new FlxSprite("assets/images/box/box_1_mm.png");
+		var _tileMR:FlxSprite = new FlxSprite("assets/images/box/box_1_mr.png");
+		var _tileBL:FlxSprite = new FlxSprite("assets/images/box/box_1_bl.png");
+		var _tileBM:FlxSprite = new FlxSprite("assets/images/box/box_1_bm.png");
+		var _tileBR:FlxSprite = new FlxSprite("assets/images/box/box_1_br.png");
 
-		TILE_TM.scale.set(widthInTiles, 1);
-		TILE_ML.scale.set(1, heightInTiles);
-		TILE_MM.scale.set(widthInTiles, heightInTiles);
-		TILE_MR.scale.set(1, heightInTiles);
-		TILE_BM.scale.set(widthInTiles, 1);
+		_tileTM.scale.set(widthInTiles, 1);
+		_tileML.scale.set(1, heightInTiles);
+		_tileMM.scale.set(widthInTiles, heightInTiles);
+		_tileMR.scale.set(1, heightInTiles);
+		_tileBM.scale.set(widthInTiles, 1);
 
 		var _x0:Int = -OFFSET_SIDE;
 		var _x1:Int = Std.int(Global.CELL_SIZE / 2) * (widthInTiles + 1) - OFFSET_SIDE;
@@ -72,25 +73,25 @@ abstract class BaseWindow extends FlxSprite
 		var _y1:Int = Std.int(Global.CELL_SIZE / 2) * (heightInTiles + 1) - OFFSET_TOP;
 		var _y2:Int = Global.CELL_SIZE * (heightInTiles + 1) - OFFSET_TOP;
 
-		stamp(TILE_TL, _x0, _y0);
-		stamp(TILE_TM, _x1, _y0);
-		stamp(TILE_TR, _x2, _y0);
-		stamp(TILE_ML, _x0, _y1);
-		stamp(TILE_MM, _x1, _y1);
-		stamp(TILE_MR, _x2, _y1);
-		stamp(TILE_BL, _x0, _y2);
-		stamp(TILE_BM, _x1, _y2);
-		stamp(TILE_BR, _x2, _y2);
+		stamp(_tileTL, _x0, _y0);
+		stamp(_tileTM, _x1, _y0);
+		stamp(_tileTR, _x2, _y0);
+		stamp(_tileML, _x0, _y1);
+		stamp(_tileMM, _x1, _y1);
+		stamp(_tileMR, _x2, _y1);
+		stamp(_tileBL, _x0, _y2);
+		stamp(_tileBM, _x1, _y2);
+		stamp(_tileBR, _x2, _y2);
 		
-		TILE_TL.kill();
-		TILE_TM.kill();
-		TILE_TR.kill();
-		TILE_ML.kill();
-		TILE_MM.kill();
-		TILE_MR.kill();
-		TILE_BL.kill();
-		TILE_BM.kill();
-		TILE_BR.kill();		
+		_tileTL.kill();
+		_tileTM.kill();
+		_tileTR.kill();
+		_tileML.kill();
+		_tileMM.kill();
+		_tileMR.kill();
+		_tileBL.kill();
+		_tileBM.kill();
+		_tileBR.kill();		
 	}
 
 	public function new(x:Float, y:Float, width:Int, height:Int, handler:WindowHandler)
@@ -141,7 +142,6 @@ abstract class BaseWindow extends FlxSprite
 		x = Math.min(Math.max(x, 0), FlxG.width - widthInPixels);
 		y = Math.min(Math.max(y, Global.CELL_SIZE), FlxG.height - Global.CELL_SIZE - widthInPixels);
 
-
 		if (content != null) content.update(elapsed);
 		hitboxWindow.update(elapsed);
 		hitboxBar.update(elapsed);
@@ -165,6 +165,28 @@ abstract class BaseWindow extends FlxSprite
 	{
 		super.draw();
 		content.draw();
+	}
+
+	public function addScrollbar():Void
+	{
+		var _tileTR:FlxSprite = new FlxSprite("assets/images/box/box_1_tr_scroll.png");
+		var _tileMR:FlxSprite = new FlxSprite("assets/images/box/box_1_mr_scroll.png");
+		var _tileBR:FlxSprite = new FlxSprite("assets/images/box/box_1_br_scroll.png");
+		
+		_tileMR.scale.set(1, heightInTiles);
+		
+		var _x2:Int = Global.CELL_SIZE * (widthInTiles + 1) - OFFSET_SIDE;
+		var _y0:Int = -OFFSET_TOP;
+		var _y1:Int = Std.int(Global.CELL_SIZE / 2) * (heightInTiles + 1) - OFFSET_TOP;
+		var _y2:Int = Global.CELL_SIZE * (heightInTiles + 1) - OFFSET_TOP;
+		
+		stamp(_tileTR, _x2, _y0);
+		stamp(_tileMR, _x2, _y1);
+		stamp(_tileBR, _x2, _y2);
+
+		_tileTR.kill();
+		_tileMR.kill();
+		_tileBR.kill();
 	}
 
 	public function activateDragging():Void

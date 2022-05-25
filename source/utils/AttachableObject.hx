@@ -9,6 +9,11 @@ class AttachableObject extends FlxObject implements Attachable
 	var relativeX:Int;
 	var relativeY:Int;
 
+    override function update(elapsed:Float) {
+        super.update(elapsed);
+        updateAttachment();
+    }
+
 	public function attach(parent:FlxObject, x:Int, y:Int)
     {
        this.parent = parent;

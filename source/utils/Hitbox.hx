@@ -7,8 +7,9 @@ class Hitbox extends AttachableObject
 {
 	public function new(parent:FlxObject, relativeX:Int, relativeY:Int, width:Int, height:Int)
 	{
-		attach(parent, relativeX, relativeY);
 		super(parent.x + relativeX, parent.y + relativeY, width, height);
+		
+		attach(parent, relativeX, relativeY);
 	}
 
 	override public function update(elapsed:Float):Void

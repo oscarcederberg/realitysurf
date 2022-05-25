@@ -24,7 +24,7 @@ class TextHandler
 
             if (newlinePos != -1 && newlinePos < charsPerLine)
             {
-                formatted.push(processing.substring(0, newlinePos));
+                formatted.push(processing.substring(0, newlinePos).rtrim());
                 processing = processing.substring(newlinePos + 1);
             }
             else if (processing.charAt(charsPerLine - 2) != " " &&

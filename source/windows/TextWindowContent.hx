@@ -6,19 +6,20 @@ import lime.utils.Assets;
 
 class TextWindowContent extends BaseWindowContent
 {
-	var lines:Array<String>;
-	var charsPerLine:Int;
-	var linesPerScreen:Int;
+	public var lines:Array<String>;
+	public var charsPerLine:Int;
+	public var linesPerScreen:Int;
 	
 	public function new(parent:BaseWindow, relativeX:Int, relativeY:Int, assetPath:String)
 	{
 		super(parent, relativeX, relativeY);
 		
 		this.charsPerLine = parent.widthInTiles * 2;
-		this.linesPerScreen = parent.heightInTiles * 2;
+		this.elementsPerScreen= parent.heightInTiles * 2;
 
 		var _textFormatter = new TextHandler(Assets.getText(assetPath));
 		this.lines = _textFormatter.format(this.charsPerLine);
+		this.elements= this.lines.length;
 		
 		makeGraphic(parent.widthInTiles * Global.CELL_SIZE, parent.heightInTiles * Global.CELL_SIZE, Global.RGB_GREEN);
 		makeText();
