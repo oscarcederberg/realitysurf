@@ -7,7 +7,7 @@ import flixel.math.FlxPoint;
 import flixel.system.FlxSound;
 import flixel.util.FlxColor;
 
-enum FileWindowState
+enum WindowState
 {
 	Idle;
 	Dragging;
@@ -19,13 +19,15 @@ abstract class BaseWindow extends FlxSprite
 	public static inline final OFFSET_SIDE:Int = 8;
 	public static inline final OFFSET_BOTTOM:Int = 11;
 	public static inline final OFFSET_BAR:Int = 7;
+	public static inline final OFFSET_SCROLL_X:Int = 4;
 	public static inline final OFFSET_CONTENT_X:Int = Global.CELL_SIZE - OFFSET_SIDE;
 	public static inline final OFFSET_CONTENT_Y:Int = Global.CELL_SIZE - OFFSET_TOP;
 	
 	public var depth:Int;
-	public var currentState:FileWindowState;
+	public var currentState:WindowState;
 	public var hitboxWindow:Hitbox;
-	public var hitboxBar:Hitbox;
+	public var hitboxTopbar:Hitbox;
+	public var hitboxScroll:Hitbox;
 	public var hitboxClose:Hitbox;
 	
 	var handler:WindowHandler;
@@ -44,6 +46,85 @@ abstract class BaseWindow extends FlxSprite
 	var dragSound:FlxSound;
 	var dropSound:FlxSound;
 	var closeSound:FlxSound;
+
+	public function new(x:Float, y:Float, width:Int, height:Int, handler:WindowHandler)
+	{
+		super(x, y);
+
+		this.depth = 0;
+		this.currentState = WindowState.Idle;
+		this.mouseOffsetX = 0;
+		this.mouseOffsetY = 0;
+
+		this.handler = handler;
+		this.widthInTiles = width;
+		this.heightInTiles = height;
+		this.widthInPixels = Global.CELL_SIZE * (width + 2) - (OFFSET_SIDE * 2);
+		this.heightInPixels = Global.CELL_SIZE * (height + 2) - (OFFSET_TOP + OFFSET_BOTTOM);
+
+		// GRAPHICS
+		makeWindowGraphic();
+
+		// COLLISION BOXES
+		this.hitboxWindow = new Hitbox(this, 0, 0, widthInPixels, heightInPixels);
+		this.hitboxWindow.scrollFactor.set(0, 0);
+		this.hitboxTopbar = new Hitbox(this, 0, 0, widthInPixels, OFFSET_BAR);
+		this.hitboxTopbar.scrollFactor.set(0, 0);
+		this.hitboxClose = new Hitbox(this, widthInPixels - OFFSET_BAR, 0, OFFSET_BAR, OFFSET_BAR);
+		this.hitboxClose.scrollFactor.set(0, 0);
+
+		// SOUNDS
+		this.openSound = FlxG.sound.load("assets/sounds/open.wav");
+		this.dragSound = FlxG.sound.load("assets/sounds/drag.wav");
+		this.dropSound = FlxG.sound.load("assets/sounds/drop.wav");
+		this.closeSound = FlxG.sound.load("assets/sounds/close.wav");
+
+		openSound.play();
+	}
+
+	override public function update(elapsed:Float):Void
+	{
+		if (currentState == WindowState.Dragging)
+		{
+			if (!handler.isWindowActive(this))
+				handler.setWindowAsActive(this);
+			handleDragging();
+		}
+
+		// CLAMP WINDOW POSITION
+		x = Math.min(Math.max(x, 0), FlxG.width - widthInPixels);
+		y = Math.min(Math.max(y, Global.CELL_SIZE), FlxG.height - Global.CELL_SIZE - widthInPixels);
+
+		if (content != null) content.update(elapsed);
+		if (scrollbar != null) scrollbar.update(elapsed);
+
+		hitboxWindow.update(elapsed);
+		hitboxTopbar.update(elapsed);
+		hitboxClose.update(elapsed);
+		if (hitboxScroll != null) hitboxScroll.update(elapsed);
+		
+		super.update(elapsed);
+	}
+
+	override public function draw():Void
+	{
+		super.draw();
+		if (content != null) content.draw();
+		if (scrollbar != null) scrollbar.draw();
+	}
+
+	override public function kill():Void
+	{
+		closeSound.play();
+
+		super.kill();
+		hitboxWindow.kill();
+		hitboxTopbar.kill();
+		hitboxClose.kill();
+		if (hitboxScroll != null) hitboxScroll.kill();
+		if (content != null) content.kill();
+		if (scrollbar != null) scrollbar.kill();
+	}
 
 	private function makeWindowGraphic()
 	{
@@ -94,79 +175,6 @@ abstract class BaseWindow extends FlxSprite
 		_tileBR.kill();		
 	}
 
-	public function new(x:Float, y:Float, width:Int, height:Int, handler:WindowHandler)
-	{
-		super(x, y);
-
-		this.depth = 0;
-		this.currentState = FileWindowState.Idle;
-		this.mouseOffsetX = 0;
-		this.mouseOffsetY = 0;
-
-		this.handler = handler;
-		this.widthInTiles = width;
-		this.heightInTiles = height;
-		this.widthInPixels = Global.CELL_SIZE * (width + 2) - (OFFSET_SIDE * 2);
-		this.heightInPixels = Global.CELL_SIZE * (height + 2) - (OFFSET_TOP + OFFSET_BOTTOM);
-
-		// GRAPHICS
-		makeWindowGraphic();
-
-		// COLLISION BOXES
-		this.hitboxWindow = new Hitbox(this, 0, 0, widthInPixels, heightInPixels);
-		this.hitboxWindow.scrollFactor.set(0, 0);
-		this.hitboxBar = new Hitbox(this, 0, 0, widthInPixels, OFFSET_BAR);
-		this.hitboxBar.scrollFactor.set(0, 0);
-		this.hitboxClose = new Hitbox(this, widthInPixels - OFFSET_BAR, 0, OFFSET_BAR, OFFSET_BAR);
-		this.hitboxClose.scrollFactor.set(0, 0);
-
-		// SOUNDS
-		this.openSound = FlxG.sound.load("assets/sounds/open.wav");
-		this.dragSound = FlxG.sound.load("assets/sounds/drag.wav");
-		this.dropSound = FlxG.sound.load("assets/sounds/drop.wav");
-		this.closeSound = FlxG.sound.load("assets/sounds/close.wav");
-
-		openSound.play();
-	}
-
-	override public function update(elapsed:Float):Void
-	{
-		if (currentState == FileWindowState.Dragging)
-		{
-			if (!handler.isWindowActive(this))
-				handler.setWindowAsActive(this);
-			handleDragging();
-		}
-
-		// CLAMP WINDOW POSITION
-		x = Math.min(Math.max(x, 0), FlxG.width - widthInPixels);
-		y = Math.min(Math.max(y, Global.CELL_SIZE), FlxG.height - Global.CELL_SIZE - widthInPixels);
-
-		if (content != null) content.update(elapsed);
-		hitboxWindow.update(elapsed);
-		hitboxBar.update(elapsed);
-		hitboxClose.update(elapsed);
-		
-		super.update(elapsed);
-	}
-
-	override public function kill():Void
-	{
-		closeSound.play();
-
-		super.kill();
-		hitboxWindow.kill();
-		hitboxBar.kill();
-		hitboxClose.kill();
-		content.kill();
-	}
-
-	override public function draw():Void
-	{
-		super.draw();
-		content.draw();
-	}
-
 	public function addScrollbar():Void
 	{
 		var _tileTR:FlxSprite = new FlxSprite("assets/images/box/box_1_tr_scroll.png");
@@ -175,6 +183,8 @@ abstract class BaseWindow extends FlxSprite
 		
 		_tileMR.scale.set(1, heightInTiles);
 		
+		var _x0:Int = -OFFSET_SIDE;
+		var _x1:Int = Std.int(Global.CELL_SIZE / 2) * (widthInTiles + 1) - OFFSET_SIDE;
 		var _x2:Int = Global.CELL_SIZE * (widthInTiles + 1) - OFFSET_SIDE;
 		var _y0:Int = -OFFSET_TOP;
 		var _y1:Int = Std.int(Global.CELL_SIZE / 2) * (heightInTiles + 1) - OFFSET_TOP;
@@ -187,6 +197,12 @@ abstract class BaseWindow extends FlxSprite
 		_tileTR.kill();
 		_tileMR.kill();
 		_tileBR.kill();
+		
+		this.hitboxScroll = new Hitbox(this, _x2 + OFFSET_SCROLL_X, _y1, widthInPixels, OFFSET_BAR);
+		this.hitboxScroll.scrollFactor.set(0, 0);
+
+		this.scrollbar = new Scrollbar(this, _x2 + OFFSET_SCROLL_X, _y1, content.elementsPerScreen, content.elements);
+		this.scrollbar.scrollFactor.set(0, 0);
 	}
 
 	public function activateDragging():Void
@@ -197,7 +213,7 @@ abstract class BaseWindow extends FlxSprite
 
 		mouseOffsetX = Std.int(_mousePoint.x - x);
 		mouseOffsetY = Std.int(_mousePoint.y - y);
-		currentState = FileWindowState.Dragging;
+		currentState = WindowState.Dragging;
 	}
 
 	private function handleDragging():Void
@@ -212,7 +228,42 @@ abstract class BaseWindow extends FlxSprite
 		else
 		{
 			dropSound.play();
-			currentState = FileWindowState.Idle;
+			currentState = WindowState.Idle;
+		}
+	}
+
+	public function handleInput(point:FlxPoint, click:Bool, scroll:Int):Void
+	{
+		if (hitboxClose.overlapsPoint(point))
+		{
+			if(click)
+				handler.deleteWindow(this);
+		}
+		else if (hitboxTopbar.overlapsPoint(point))
+		{
+			if(click)
+			{
+				activateDragging();
+				if (!handler.isWindowActive(this))
+					handler.setWindowAsActive(this);
+			}
+		}
+		else if (hitboxScroll != null && hitboxScroll.overlapsPoint(point))
+		{
+			scrollbar.handleInput(point, click, scroll);
+		}
+		else if (hitboxWindow.overlapsPoint(point))
+		{
+			if (click)
+			{
+				if (!handler.isWindowActive(this))
+					handler.setWindowAsActive(this);
+			}
+
+			if (content != null) 
+				content.handleInput(point, click, scroll);
+			if (scrollbar != null)
+				scrollbar.handleInput(point, false, scroll);
 		}
 	}
 }

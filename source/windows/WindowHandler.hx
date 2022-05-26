@@ -21,47 +21,22 @@ class WindowHandler
 		this.stack = new GenericStack<BaseWindow>();
 		this.windows.scrollFactor.set(0, 0);
 	}
-	
-	private function handleClick(window:BaseWindow, point:FlxPoint):Bool
-	{
-		var hitboxWindow:FlxObject = window.hitboxWindow;
-		var hitboxBar:FlxObject = window.hitboxBar;
-		var hitboxClose:FlxObject = window.hitboxClose;
-		
-		if (hitboxClose.overlapsPoint(point))
-		{
-			deleteWindow(window);
-			return true;
-		}
-		
-		if (hitboxBar.overlapsPoint(point))
-		{
-			window.activateDragging();
-			if (!isWindowActive(window))
-				setWindowAsActive(window);
-			return true;
-		}
-		
-		if (hitboxWindow.overlapsPoint(point))
-		{
-			if (!isWindowActive(window))
-				setWindowAsActive(window);
-			return true;
-		}
-
-		return false;
-	}
 
 	public function update(elapsed:Float):Void
 	{
-		var _click:Bool = FlxG.mouse.justPressed;
 		var _point:FlxPoint = FlxG.mouse.getPositionInCameraView();
+		var _click:Bool = FlxG.mouse.justPressed;
+		var _scroll:Int = FlxG.mouse.wheel;
 
-		if (_click)
+		if (_click || _scroll != 0)
 		{
 			for (window in stack)
 			{
-				if (handleClick(window, _point)) break;
+				if (window.hitboxWindow.overlapsPoint(_point))
+				{
+					window.handleInput(_point, _click, _scroll);
+					break;	
+				}
 			}
 		}
 	}
@@ -71,7 +46,8 @@ class WindowHandler
 		var index:Int = 0;
 		for (window in stack)
 		{
-			window.depth = index;
+			if (window.depth != index)
+				window.depth = index;
 			index++;
 		}
 		// NOTE: Is this necessary? Only one window is moved at a time.
