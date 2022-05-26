@@ -36,7 +36,7 @@ class Scrollbar extends AttachableSprite
         this.currentStep = 0;
         
         loadGraphic("assets/images/box/box_1_thumb.png");
-        setGraphicSize(1, this.thumbLength);
+        this.scale.set(1, this.thumbLength);
         
         this.thumbHitbox = new Hitbox(this, 0, 0, Std.int(width), this.thumbLength);
         this.thumbHitbox.scrollFactor.set(0, 0);

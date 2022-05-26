@@ -8,14 +8,13 @@ class TextWindowContent extends BaseWindowContent
 {
 	public var lines:Array<String>;
 	public var charsPerLine:Int;
-	public var linesPerScreen:Int;
 	
 	public function new(parent:BaseWindow, relativeX:Int, relativeY:Int, assetPath:String)
 	{
 		super(parent, relativeX, relativeY);
 		
 		this.charsPerLine = parent.widthInTiles * 2;
-		this.elementsPerScreen= parent.heightInTiles * 2;
+		this.elementsPerScreen= parent.heightInTiles * 2 - 1;
 
 		var _textFormatter = new TextHandler(Assets.getText(assetPath));
 		this.lines = _textFormatter.format(this.charsPerLine);
@@ -27,7 +26,7 @@ class TextWindowContent extends BaseWindowContent
 
 	function makeText():Void
 	{
-		for (i in 0...linesPerScreen) 
+		for (i in 0...elementsPerScreen) 
 		{
 			var text:FlxText = new FlxText(0, 0, 0, lines[i], 8);
 			text.height = 8;
