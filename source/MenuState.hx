@@ -17,6 +17,11 @@ class MenuState extends FlxState
 		super.create();
 	}
 
+	override function update(elapsed:Float) {
+		super.update(elapsed);
+		if (FlxG.keys.anyPressed([J, Z])) clickPlay();
+	}
+
 	function clickPlay()
 	{
 		FlxG.switchState(new PlayState());

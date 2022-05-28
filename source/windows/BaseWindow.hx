@@ -198,10 +198,10 @@ abstract class BaseWindow extends FlxSprite
 		_tileMR.kill();
 		_tileBR.kill();
 		
-		this.hitboxScroll = new Hitbox(this, _x2 + OFFSET_SCROLL_X, _y1, widthInPixels, OFFSET_BAR);
+		this.hitboxScroll = new Hitbox(this, _x2 + OFFSET_SCROLL_X, Global.CELL_SIZE - OFFSET_TOP, widthInPixels, heightInPixels - OFFSET_TOP - OFFSET_BOTTOM);
 		this.hitboxScroll.scrollFactor.set(0, 0);
 
-		this.scrollbar = new Scrollbar(this, _x2 + OFFSET_SCROLL_X, _y1, content.elementsPerScreen, content.elements);
+		this.scrollbar = new Scrollbar(this, _x2 + OFFSET_SCROLL_X, Global.CELL_SIZE - OFFSET_TOP, content.elementsPerScreen, content.elements);
 		this.scrollbar.scrollFactor.set(0, 0);
 	}
 

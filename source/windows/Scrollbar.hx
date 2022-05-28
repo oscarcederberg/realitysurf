@@ -28,7 +28,6 @@ class Scrollbar extends AttachableSprite
         
         super.attach(parent, x, y);
         
-        this.startY = relativeY;
         this.barLength = parent.heightInTiles * Global.CELL_SIZE;
         this.thumbLength = Math.floor((elementsPerScreen / elements) * barLength);
         this.maxStep = barLength - thumbLength + 1;
@@ -37,8 +36,10 @@ class Scrollbar extends AttachableSprite
         
         loadGraphic("assets/images/box/box_1_thumb.png");
         this.scale.set(1, this.thumbLength);
+        this.relativeY = relativeY - Std.int(this.height)*4;
+        this.startY = relativeY;
         
-        this.thumbHitbox = new Hitbox(this, 0, 0, Std.int(width), this.thumbLength);
+        this.thumbHitbox = new Hitbox(this, 0, 0, Std.int(this.width), Std.int(this.height));
         this.thumbHitbox.scrollFactor.set(0, 0);
     }
 
@@ -48,38 +49,10 @@ class Scrollbar extends AttachableSprite
         
         thumbHitbox.update(elapsed);
     }
-
-    override function kill() {
-        super.kill();
-    }
 	
-    public function activateDragging():Void
-	{
-		var _mousePoint:FlxPoint = FlxG.mouse.getScreenPosition();
-
-        beingDragged = true;
-		mouseOffsetY = Std.int(_mousePoint.y - y);
-	}
+    public function activateDragging():Void {}
 	
-    private function handleDragging():Void
-	{
-		var _mousePressed:Bool = FlxG.mouse.pressed;
-		var _mousePoint:FlxPoint = FlxG.mouse.getScreenPosition();
-
-		if (_mousePressed)
-		{
-            y = Std.int(_mousePoint.y - mouseOffsetY);
-            
-            if (y < 0)
-                y = 0;
-            else if (y > maxStep)
-                y = maxStep;
-        }
-		else
-		{
-            beingDragged = false;
-		}
-	}
+    private function handleDragging():Void {}
 
 	public function handleInput(point:FlxPoint, click:Bool, scroll:Int)
     {
@@ -100,14 +73,14 @@ class Scrollbar extends AttachableSprite
         //     }
         // }
         
-        if (scroll > 0)
+        if (scroll < 0)
         {
             if (currentStep < maxStep)
             {
                 currentStep++;
             }
         }
-        else if (scroll < 0)
+        else if (scroll > 0)
         {
             if (currentStep > 0)
             {
