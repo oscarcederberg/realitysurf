@@ -15,6 +15,7 @@ enum WindowState
 
 abstract class BaseWindow extends FlxSprite
 {
+	// NOTE: Offsets based on the window graphics.
 	public static inline final OFFSET_TOP:Int = 6;
 	public static inline final OFFSET_SIDE:Int = 8;
 	public static inline final OFFSET_BOTTOM:Int = 11;
@@ -22,6 +23,7 @@ abstract class BaseWindow extends FlxSprite
 	public static inline final OFFSET_SCROLL_X:Int = 4;
 	public static inline final OFFSET_CONTENT_X:Int = Global.CELL_SIZE - OFFSET_SIDE;
 	public static inline final OFFSET_CONTENT_Y:Int = Global.CELL_SIZE - OFFSET_TOP;
+	public static inline final SCROLL_WIDTH:Int = 4;
 	
 	public var depth:Int;
 	public var currentState:WindowState;
@@ -38,6 +40,13 @@ abstract class BaseWindow extends FlxSprite
 	public var heightInTiles:Int;
 	public var widthInPixels:Int;
 	public var heightInPixels:Int;
+
+	var x0:Int;
+	var x1:Int;
+	var x2:Int;
+	var y0:Int;
+	var y1:Int;
+	var y2:Int;
 
 	var mouseOffsetX:Int;
 	var mouseOffsetY:Int;
@@ -61,6 +70,13 @@ abstract class BaseWindow extends FlxSprite
 		this.heightInTiles = height;
 		this.widthInPixels = Global.CELL_SIZE * (width + 2) - (OFFSET_SIDE * 2);
 		this.heightInPixels = Global.CELL_SIZE * (height + 2) - (OFFSET_TOP + OFFSET_BOTTOM);
+		
+		x0 = -OFFSET_SIDE;
+		x1 = Std.int(Global.CELL_SIZE / 2) * (widthInTiles + 1) - OFFSET_SIDE;
+		x2 = Global.CELL_SIZE * (widthInTiles + 1) - OFFSET_SIDE;
+		y0 = -OFFSET_TOP;
+		y1 = Std.int(Global.CELL_SIZE / 2) * (heightInTiles + 1) - OFFSET_TOP;
+		y2 = Global.CELL_SIZE * (heightInTiles + 1) - OFFSET_TOP;
 
 		// GRAPHICS
 		makeWindowGraphic();
@@ -147,22 +163,15 @@ abstract class BaseWindow extends FlxSprite
 		_tileMR.scale.set(1, heightInTiles);
 		_tileBM.scale.set(widthInTiles, 1);
 
-		var _x0:Int = -OFFSET_SIDE;
-		var _x1:Int = Std.int(Global.CELL_SIZE / 2) * (widthInTiles + 1) - OFFSET_SIDE;
-		var _x2:Int = Global.CELL_SIZE * (widthInTiles + 1) - OFFSET_SIDE;
-		var _y0:Int = -OFFSET_TOP;
-		var _y1:Int = Std.int(Global.CELL_SIZE / 2) * (heightInTiles + 1) - OFFSET_TOP;
-		var _y2:Int = Global.CELL_SIZE * (heightInTiles + 1) - OFFSET_TOP;
-
-		stamp(_tileTL, _x0, _y0);
-		stamp(_tileTM, _x1, _y0);
-		stamp(_tileTR, _x2, _y0);
-		stamp(_tileML, _x0, _y1);
-		stamp(_tileMM, _x1, _y1);
-		stamp(_tileMR, _x2, _y1);
-		stamp(_tileBL, _x0, _y2);
-		stamp(_tileBM, _x1, _y2);
-		stamp(_tileBR, _x2, _y2);
+		stamp(_tileTL, x0, y0);
+		stamp(_tileTM, x1, y0);
+		stamp(_tileTR, x2, y0);
+		stamp(_tileML, x0, y1);
+		stamp(_tileMM, x1, y1);
+		stamp(_tileMR, x2, y1);
+		stamp(_tileBL, x0, y2);
+		stamp(_tileBM, x1, y2);
+		stamp(_tileBR, x2, y2);
 		
 		_tileTL.kill();
 		_tileTM.kill();
@@ -183,25 +192,18 @@ abstract class BaseWindow extends FlxSprite
 		
 		_tileMR.scale.set(1, heightInTiles);
 		
-		var _x0:Int = -OFFSET_SIDE;
-		var _x1:Int = Std.int(Global.CELL_SIZE / 2) * (widthInTiles + 1) - OFFSET_SIDE;
-		var _x2:Int = Global.CELL_SIZE * (widthInTiles + 1) - OFFSET_SIDE;
-		var _y0:Int = -OFFSET_TOP;
-		var _y1:Int = Std.int(Global.CELL_SIZE / 2) * (heightInTiles + 1) - OFFSET_TOP;
-		var _y2:Int = Global.CELL_SIZE * (heightInTiles + 1) - OFFSET_TOP;
-		
-		stamp(_tileTR, _x2, _y0);
-		stamp(_tileMR, _x2, _y1);
-		stamp(_tileBR, _x2, _y2);
+		stamp(_tileTR, x2, y0);
+		stamp(_tileMR, x2, y1);
+		stamp(_tileBR, x2, y2);
 
 		_tileTR.kill();
 		_tileMR.kill();
 		_tileBR.kill();
 		
-		this.hitboxScroll = new Hitbox(this, _x2 + OFFSET_SCROLL_X, Global.CELL_SIZE - OFFSET_TOP, widthInPixels, heightInPixels - OFFSET_TOP - OFFSET_BOTTOM);
+		this.hitboxScroll = new Hitbox(this, x2 + OFFSET_SCROLL_X, Global.CELL_SIZE - OFFSET_TOP, SCROLL_WIDTH, heightInTiles * Global.CELL_SIZE);
 		this.hitboxScroll.scrollFactor.set(0, 0);
 
-		this.scrollbar = new Scrollbar(this, _x2 + OFFSET_SCROLL_X, Global.CELL_SIZE - OFFSET_TOP, content.elementsPerScreen, content.elements);
+		this.scrollbar = new Scrollbar(this, x2 + OFFSET_SCROLL_X, Global.CELL_SIZE - OFFSET_TOP, content.elementsPerScreen, content.elements);
 		this.scrollbar.scrollFactor.set(0, 0);
 	}
 

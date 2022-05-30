@@ -1,10 +1,7 @@
 package windows;
 
-import flixel.FlxSprite;
-import flixel.FlxG;
 import flixel.math.FlxPoint;
 import utils.Hitbox;
-import openfl.utils.IAssetCache;
 import utils.AttachableSprite;
 
 class Scrollbar extends AttachableSprite
@@ -35,10 +32,9 @@ class Scrollbar extends AttachableSprite
         this.currentStep = 0;
         
         loadGraphic("assets/images/box/box_1_thumb.png");
-        this.scale.set(1, this.thumbLength);
-        this.relativeY = relativeY - Std.int(this.height)*4;
+        setGraphicSize(BaseWindow.SCROLL_WIDTH, thumbLength);
         this.startY = relativeY;
-        
+      
         this.thumbHitbox = new Hitbox(this, 0, 0, Std.int(this.width), Std.int(this.height));
         this.thumbHitbox.scrollFactor.set(0, 0);
     }
@@ -56,23 +52,6 @@ class Scrollbar extends AttachableSprite
 
 	public function handleInput(point:FlxPoint, click:Bool, scroll:Int)
     {
-        // if (click)
-        // {
-        //     if (this.thumbHitbox.overlapsPoint(point))
-        //     {
-        //         activateDragging();
-        //     }
-        //     else
-        //     {
-        //         y = Std.int(point.y - this.y);
-                
-        //         if (y < 0)
-        //             y = 0;
-        //         else if (y > maxStep)
-        //             y = maxStep;
-        //     }
-        // }
-        
         if (scroll < 0)
         {
             if (currentStep < maxStep)
