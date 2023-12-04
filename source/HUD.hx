@@ -6,13 +6,11 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 
 using flixel.util.FlxSpriteUtil;
 
-class HUD extends FlxTypedGroup<FlxSprite>
-{
+class HUD extends FlxTypedGroup<FlxSprite> {
 	var upperBar:FlxSprite;
 	var lowerBar:FlxSprite;
 
-	public function new()
-	{
+	public function new() {
 		super();
 		upperBar = new FlxSprite(0, 0);
 		upperBar.makeGraphic(FlxG.width, Global.CELL_SIZE, Global.RGB_BLACK);

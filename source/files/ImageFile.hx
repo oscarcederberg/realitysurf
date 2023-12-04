@@ -2,10 +2,8 @@ package files;
 
 import files.FileFactory.FileType;
 
-class ImageFile extends BaseFile
-{
-	public function new(x:Float, y:Float, values:Null<Dynamic>)
-	{
+class ImageFile extends BaseFile {
+	public function new(x:Float, y:Float, values:Null<Dynamic>) {
 		super(x, y, values);
 
 		this.fileType = FileType.Image;

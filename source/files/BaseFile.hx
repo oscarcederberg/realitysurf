@@ -4,8 +4,7 @@ import files.FileFactory.FileType;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
-abstract class BaseFile extends FlxSprite
-{
+abstract class BaseFile extends FlxSprite {
 	static inline final OFFSET_Y:Int = -8;
 	static inline final AMP_Y:Int = 2;
 	static inline final FREQ_Y:Float = 1 / 4;
@@ -23,8 +22,7 @@ abstract class BaseFile extends FlxSprite
 	public var windowHeight:Int;
 	public var fileType:FileType;
 
-	public function new(x:Float, y:Float, values:Dynamic)
-	{
+	public function new(x:Float, y:Float, values:Dynamic) {
 		this.start_y = y + OFFSET_Y;
 		this.phase_y = Std.int(y % Global.CELL_SIZE + x % Global.CELL_SIZE);
 		this.old_steps = -1;
@@ -39,10 +37,8 @@ abstract class BaseFile extends FlxSprite
 		this.windowHeight = Std.parseInt(values.height);
 	}
 
-	public override function update(elapsed:Float)
-	{
-		if (Global.stepsTaken != old_steps)
-		{
+	public override function update(elapsed:Float) {
+		if (Global.stepsTaken != old_steps) {
 			floatInPlace();
 			y = start_y + delta_y;
 		}
@@ -50,14 +46,12 @@ abstract class BaseFile extends FlxSprite
 		super.update(elapsed);
 	}
 
-	function floatInPlace()
-	{
+	function floatInPlace() {
 		delta_y = AMP_Y * Math.sin(FREQ_Y * Global.stepsTaken + phase_y);
 		old_steps = Global.stepsTaken;
 	}
 
-	public function interact()
-	{
+	public function interact() {
 		parent.createWindow(this);
 	}
 }

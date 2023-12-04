@@ -1,21 +1,17 @@
 package files;
 
-enum FileType
-{
+enum FileType {
 	Text;
 	Image;
 }
 
-class FileFactory
-{
+class FileFactory {
 	public function new() {};
 
-	public function newFile(x:Float, y:Float, values:Dynamic):BaseFile
-	{
+	public function newFile(x:Float, y:Float, values:Dynamic):BaseFile {
 		var fileType = FileType.createByName(values.type);
 
-		switch (fileType)
-		{
+		switch (fileType) {
 			case Text:
 				return new TextFile(x, y, values);
 			case Image:

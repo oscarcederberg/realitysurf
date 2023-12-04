@@ -4,30 +4,26 @@ import utils.TextHandler;
 import flixel.text.FlxText;
 import lime.utils.Assets;
 
-class TextWindowContent extends BaseWindowContent
-{
+class TextWindowContent extends BaseWindowContent {
 	public var lines:Array<String>;
 	public var charsPerLine:Int;
-	
-	public function new(parent:BaseWindow, relativeX:Int, relativeY:Int, assetPath:String)
-	{
+
+	public function new(parent:BaseWindow, relativeX:Int, relativeY:Int, assetPath:String) {
 		super(parent, relativeX, relativeY);
-		
+
 		this.charsPerLine = parent.widthInTiles * 2;
-		this.elementsPerScreen= parent.heightInTiles * 2 - 1;
+		this.elementsPerScreen = parent.heightInTiles * 2 - 1;
 
 		var _textFormatter = new TextHandler(Assets.getText(assetPath));
 		this.lines = _textFormatter.format(this.charsPerLine);
-		this.elements= this.lines.length;
-		
+		this.elements = this.lines.length;
+
 		makeGraphic(parent.widthInTiles * Global.CELL_SIZE, parent.heightInTiles * Global.CELL_SIZE, Global.RGB_GREEN);
 		makeText();
 	}
 
-	function makeText():Void
-	{
-		for (i in 0...elementsPerScreen) 
-		{
+	function makeText():Void {
+		for (i in 0...elementsPerScreen) {
 			var text:FlxText = new FlxText(0, 0, 0, lines[i], 8);
 			text.height = 8;
 			text.color = Global.RGB_GREEN;

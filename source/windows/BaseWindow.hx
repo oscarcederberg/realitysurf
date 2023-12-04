@@ -7,14 +7,12 @@ import flixel.math.FlxPoint;
 import flixel.system.FlxSound;
 import flixel.util.FlxColor;
 
-enum WindowState
-{
+enum WindowState {
 	Idle;
 	Dragging;
 }
 
-abstract class BaseWindow extends FlxSprite
-{
+abstract class BaseWindow extends FlxSprite {
 	// NOTE: Offsets based on the window graphics.
 	public static inline final OFFSET_TOP:Int = 6;
 	public static inline final OFFSET_SIDE:Int = 8;
@@ -24,14 +22,14 @@ abstract class BaseWindow extends FlxSprite
 	public static inline final OFFSET_CONTENT_X:Int = Global.CELL_SIZE - OFFSET_SIDE;
 	public static inline final OFFSET_CONTENT_Y:Int = Global.CELL_SIZE - OFFSET_TOP;
 	public static inline final SCROLL_WIDTH:Int = 4;
-	
+
 	public var depth:Int;
 	public var currentState:WindowState;
 	public var hitboxWindow:Hitbox;
 	public var hitboxTopbar:Hitbox;
 	public var hitboxScroll:Hitbox;
 	public var hitboxClose:Hitbox;
-	
+
 	var handler:WindowHandler;
 	var content:BaseWindowContent;
 	var scrollbar:Scrollbar;
@@ -56,8 +54,7 @@ abstract class BaseWindow extends FlxSprite
 	var dropSound:FlxSound;
 	var closeSound:FlxSound;
 
-	public function new(x:Float, y:Float, width:Int, height:Int, handler:WindowHandler)
-	{
+	public function new(x:Float, y:Float, width:Int, height:Int, handler:WindowHandler) {
 		super(x, y);
 
 		this.depth = 0;
@@ -70,7 +67,7 @@ abstract class BaseWindow extends FlxSprite
 		this.heightInTiles = height;
 		this.widthInPixels = Global.CELL_SIZE * (width + 2) - (OFFSET_SIDE * 2);
 		this.heightInPixels = Global.CELL_SIZE * (height + 2) - (OFFSET_TOP + OFFSET_BOTTOM);
-		
+
 		x0 = -OFFSET_SIDE;
 		x1 = Std.int(Global.CELL_SIZE / 2) * (widthInTiles + 1) - OFFSET_SIDE;
 		x2 = Global.CELL_SIZE * (widthInTiles + 1) - OFFSET_SIDE;
@@ -98,10 +95,8 @@ abstract class BaseWindow extends FlxSprite
 		openSound.play();
 	}
 
-	override public function update(elapsed:Float):Void
-	{
-		if (currentState == WindowState.Dragging)
-		{
+	override public function update(elapsed:Float):Void {
+		if (currentState == WindowState.Dragging) {
 			if (!handler.isWindowActive(this))
 				handler.setWindowAsActive(this);
 			handleDragging();
@@ -111,41 +106,46 @@ abstract class BaseWindow extends FlxSprite
 		x = Math.min(Math.max(x, 0), FlxG.width - widthInPixels);
 		y = Math.min(Math.max(y, Global.CELL_SIZE), FlxG.height - Global.CELL_SIZE - widthInPixels);
 
-		if (content != null) content.update(elapsed);
-		if (scrollbar != null) scrollbar.update(elapsed);
+		if (content != null)
+			content.update(elapsed);
+		if (scrollbar != null)
+			scrollbar.update(elapsed);
 
 		hitboxWindow.update(elapsed);
 		hitboxTopbar.update(elapsed);
 		hitboxClose.update(elapsed);
-		if (hitboxScroll != null) hitboxScroll.update(elapsed);
-		
+		if (hitboxScroll != null)
+			hitboxScroll.update(elapsed);
+
 		super.update(elapsed);
 	}
 
-	override public function draw():Void
-	{
+	override public function draw():Void {
 		super.draw();
-		if (content != null) content.draw();
-		if (scrollbar != null) scrollbar.draw();
+		if (content != null)
+			content.draw();
+		if (scrollbar != null)
+			scrollbar.draw();
 	}
 
-	override public function kill():Void
-	{
+	override public function kill():Void {
 		closeSound.play();
 
 		super.kill();
 		hitboxWindow.kill();
 		hitboxTopbar.kill();
 		hitboxClose.kill();
-		if (hitboxScroll != null) hitboxScroll.kill();
-		if (content != null) content.kill();
-		if (scrollbar != null) scrollbar.kill();
+		if (hitboxScroll != null)
+			hitboxScroll.kill();
+		if (content != null)
+			content.kill();
+		if (scrollbar != null)
+			scrollbar.kill();
 	}
 
-	private function makeWindowGraphic()
-	{
+	private function makeWindowGraphic() {
 		makeGraphic(widthInPixels, heightInPixels, FlxColor.TRANSPARENT);
-		
+
 		// NOTE: Is it possible to stamp the bitmap directly, instead through sprites?
 		var _tileTL:FlxSprite = new FlxSprite("assets/images/box/box_1_tl.png");
 		var _tileTM:FlxSprite = new FlxSprite("assets/images/box/box_1_tm.png");
@@ -172,7 +172,7 @@ abstract class BaseWindow extends FlxSprite
 		stamp(_tileBL, x0, y2);
 		stamp(_tileBM, x1, y2);
 		stamp(_tileBR, x2, y2);
-		
+
 		_tileTL.kill();
 		_tileTM.kill();
 		_tileTR.kill();
@@ -181,17 +181,16 @@ abstract class BaseWindow extends FlxSprite
 		_tileMR.kill();
 		_tileBL.kill();
 		_tileBM.kill();
-		_tileBR.kill();		
+		_tileBR.kill();
 	}
 
-	public function addScrollbar():Void
-	{
+	public function addScrollbar():Void {
 		var _tileTR:FlxSprite = new FlxSprite("assets/images/box/box_1_tr_scroll.png");
 		var _tileMR:FlxSprite = new FlxSprite("assets/images/box/box_1_mr_scroll.png");
 		var _tileBR:FlxSprite = new FlxSprite("assets/images/box/box_1_br_scroll.png");
-		
+
 		_tileMR.scale.set(1, heightInTiles);
-		
+
 		stamp(_tileTR, x2, y0);
 		stamp(_tileMR, x2, y1);
 		stamp(_tileBR, x2, y2);
@@ -199,7 +198,7 @@ abstract class BaseWindow extends FlxSprite
 		_tileTR.kill();
 		_tileMR.kill();
 		_tileBR.kill();
-		
+
 		this.hitboxScroll = new Hitbox(this, x2 + OFFSET_SCROLL_X, Global.CELL_SIZE - OFFSET_TOP, SCROLL_WIDTH, heightInTiles * Global.CELL_SIZE);
 		this.hitboxScroll.scrollFactor.set(0, 0);
 
@@ -207,8 +206,7 @@ abstract class BaseWindow extends FlxSprite
 		this.scrollbar.scrollFactor.set(0, 0);
 	}
 
-	public function activateDragging():Void
-	{
+	public function activateDragging():Void {
 		dragSound.play();
 
 		var _mousePoint:FlxPoint = FlxG.mouse.getScreenPosition();
@@ -218,51 +216,37 @@ abstract class BaseWindow extends FlxSprite
 		currentState = WindowState.Dragging;
 	}
 
-	private function handleDragging():Void
-	{
+	private function handleDragging():Void {
 		var _mousePressed:Bool = FlxG.mouse.pressed;
 		var _mousePoint:FlxPoint = FlxG.mouse.getScreenPosition();
 
-		if (_mousePressed)
-		{
+		if (_mousePressed) {
 			setPosition(_mousePoint.x - mouseOffsetX, _mousePoint.y - mouseOffsetY);
-		}
-		else
-		{
+		} else {
 			dropSound.play();
 			currentState = WindowState.Idle;
 		}
 	}
 
-	public function handleInput(point:FlxPoint, click:Bool, scroll:Int):Void
-	{
-		if (hitboxClose.overlapsPoint(point))
-		{
-			if(click)
+	public function handleInput(point:FlxPoint, click:Bool, scroll:Int):Void {
+		if (hitboxClose.overlapsPoint(point)) {
+			if (click)
 				handler.deleteWindow(this);
-		}
-		else if (hitboxTopbar.overlapsPoint(point))
-		{
-			if(click)
-			{
+		} else if (hitboxTopbar.overlapsPoint(point)) {
+			if (click) {
 				activateDragging();
 				if (!handler.isWindowActive(this))
 					handler.setWindowAsActive(this);
 			}
-		}
-		else if (hitboxScroll != null && hitboxScroll.overlapsPoint(point))
-		{
+		} else if (hitboxScroll != null && hitboxScroll.overlapsPoint(point)) {
 			scrollbar.handleInput(point, click, scroll);
-		}
-		else if (hitboxWindow.overlapsPoint(point))
-		{
-			if (click)
-			{
+		} else if (hitboxWindow.overlapsPoint(point)) {
+			if (click) {
 				if (!handler.isWindowActive(this))
 					handler.setWindowAsActive(this);
 			}
 
-			if (content != null) 
+			if (content != null)
 				content.handleInput(point, click, scroll);
 			if (scrollbar != null)
 				scrollbar.handleInput(point, false, scroll);

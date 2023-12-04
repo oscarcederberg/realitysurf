@@ -8,15 +8,13 @@ import flixel.system.FlxSound;
 import flixel.util.FlxDirectionFlags;
 import flixel.util.FlxTimer;
 
-enum PlayerState
-{
+enum PlayerState {
 	Idle;
 	Walking;
 	Running;
 }
 
-class Player extends FlxSprite
-{
+class Player extends FlxSprite {
 	public static inline final STEPS:Int = 4;
 	public static inline final SPEED_WALK:Int = 6;
 	public static inline final SPEED_RUN:Int = 8;
@@ -33,8 +31,7 @@ class Player extends FlxSprite
 	var stepIndex:Int;
 	var collideSound:FlxSound;
 
-	public function new(x:Float, y:Float)
-	{
+	public function new(x:Float, y:Float) {
 		super(x, y - OFFSET_Y - Global.CELL_SIZE);
 
 		this.parent = cast(FlxG.state);
@@ -66,8 +63,7 @@ class Player extends FlxSprite
 		collideSound = FlxG.sound.load("assets/sounds/collide.wav");
 	}
 
-	override public function update(elapsed:Float):Void
-	{
+	override public function update(elapsed:Float):Void {
 		midPoint = new FlxPoint(x + Global.CELL_SIZE / 2, y + Global.CELL_SIZE + OFFSET_Y);
 		handleInput();
 		animate();
@@ -75,8 +71,7 @@ class Player extends FlxSprite
 		super.update(elapsed);
 	}
 
-	public function handleInput()
-	{
+	public function handleInput() {
 		var _up:Bool = FlxG.keys.anyPressed([UP, W,]);
 		var _down:Bool = FlxG.keys.anyPressed([DOWN, S]);
 		var _left:Bool = FlxG.keys.anyPressed([LEFT, A]);
@@ -84,70 +79,51 @@ class Player extends FlxSprite
 		var _action:Bool = FlxG.keys.anyJustPressed([Z, J]);
 		var _shift:Bool = FlxG.keys.anyPressed([SHIFT]);
 
-		if (_up && _down)
-		{
+		if (_up && _down) {
 			_up = _down = false;
 		}
-		if (_left && _right)
-		{
+		if (_left && _right) {
 			_left = _right = false;
 		}
 
-		if (currentState == PlayerState.Idle)
-		{
+		if (currentState == PlayerState.Idle) {
 			var dx = 0, dy = 0;
 			stepsLeft = STEPS;
 
-			if (_up)
-			{
+			if (_up) {
 				dy = -Global.CELL_SIZE;
 				facing = FlxDirectionFlags.UP;
-			}
-			else if (_left)
-			{
+			} else if (_left) {
 				dx = -Global.CELL_SIZE;
 				facing = FlxDirectionFlags.LEFT;
-			}
-			else if (_down)
-			{
+			} else if (_down) {
 				dy = Global.CELL_SIZE;
 				facing = FlxDirectionFlags.DOWN;
-			}
-			else if (_right)
-			{
+			} else if (_right) {
 				dx = Global.CELL_SIZE;
 				facing = FlxDirectionFlags.RIGHT;
-			}
-			else if (_action)
-			{
+			} else if (_action) {
 				interact();
 			}
 
-			if (dx != 0 || dy != 0)
-			{
-				if (!isBlocked(midPoint.add(dx, dy)))
-				{
+			if (dx != 0 || dy != 0) {
+				if (!isBlocked(midPoint.add(dx, dy))) {
 					moveSpeed = (_shift ? SPEED_RUN : SPEED_WALK);
 					currentState = (_shift ? PlayerState.Running : PlayerState.Walking);
 					playStepSound();
 					new FlxTimer().start(1 / moveSpeed, (_) -> playStepSound(), 3);
 					move();
-				}
-				else
-				{
+				} else {
 					collideSound.play();
 				}
 			}
 		}
 	}
 
-	public function animate()
-	{
-		switch (currentState)
-		{
+	public function animate() {
+		switch (currentState) {
 			case Idle:
-				switch (facing)
-				{
+				switch (facing) {
 					case FlxDirectionFlags.UP:
 						animation.play("idle_up");
 					case FlxDirectionFlags.LEFT:
@@ -159,8 +135,7 @@ class Player extends FlxSprite
 					default:
 				}
 			case Walking | Running:
-				switch (facing)
-				{
+				switch (facing) {
 					case FlxDirectionFlags.UP:
 						animation.play("move_up");
 					case FlxDirectionFlags.LEFT:
@@ -175,13 +150,10 @@ class Player extends FlxSprite
 		}
 	}
 
-	private function move()
-	{
-		if (stepsLeft > 0)
-		{
+	private function move() {
+		if (stepsLeft > 0) {
 			stepsLeft--;
-			switch (facing)
-			{
+			switch (facing) {
 				case FlxDirectionFlags.UP:
 					y -= 4;
 				case FlxDirectionFlags.LEFT:
@@ -194,18 +166,14 @@ class Player extends FlxSprite
 			}
 			Global.stepsTaken++;
 			new FlxTimer().start(1 / moveSpeed, (_) -> move(), 1);
-		}
-		else
-		{
+		} else {
 			currentState = PlayerState.Idle;
 		}
 	}
 
-	private function interact()
-	{
+	private function interact() {
 		var dx = 0, dy = 0;
-		switch (facing)
-		{
+		switch (facing) {
 			case FlxDirectionFlags.UP:
 				dy = -Global.CELL_SIZE;
 			case FlxDirectionFlags.LEFT:
@@ -218,23 +186,19 @@ class Player extends FlxSprite
 		}
 		var point:FlxPoint = midPoint.add(dx, dy);
 
-		for (file in parent.level.files)
-		{
-			if (file.overlapsPoint(point))
-			{
+		for (file in parent.level.files) {
+			if (file.overlapsPoint(point)) {
 				file.interact();
 			}
 		}
 	}
 
-	private function isBlocked(point:FlxPoint):Bool
-	{
+	private function isBlocked(point:FlxPoint):Bool {
 		// NOTE: Do we have to check through collisions? 2D-structure instead maybe?
 		return !parent.level.tiles.overlapsPoint(point) || parent.level.files.overlapsPoint(point);
 	}
 
-	private function playStepSound()
-	{
+	private function playStepSound() {
 		stepSounds[stepIndex].play();
 		stepIndex = (stepIndex + 1) % 2;
 	}
