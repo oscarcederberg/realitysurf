@@ -1,5 +1,6 @@
 package;
 
+import windows.BaseWindow;
 import flixel.system.FlxAssets;
 import flixel.FlxGame;
 import openfl.display.Sprite;
@@ -9,6 +10,8 @@ class Main extends Sprite {
 		super();
 
 		FlxAssets.FONT_DEFAULT = "assets/fonts/c64_mono.ttf";
-		addChild(new FlxGame(512, 384, MenuState));
+		BaseWindow.loadAllTileAssets();
+
+		addChild(new FlxGame(512, 384, PlayState));
 	}
 }

@@ -16,18 +16,17 @@ class Scrollbar extends AttachableSprite {
 	public var stepAmount:Int;
 
 	var beingDragged:Bool;
-	var mouseOffsetY:Int;
 
 	public function new(parent:BaseWindow, x:Int, y:Int, elementsPerScreen:Int, elements:Int) {
-		super(parent.x + x, parent.y + y);
-
-		super.attach(parent, x, y);
-
-		this.barLength = parent.heightInTiles * Global.CELL_SIZE;
-		this.thumbLength = Math.floor((elementsPerScreen / elements) * barLength);
+		this.barLength = parent.heightInTiles * Global.CELL_SIZE - 1;
+		this.thumbLength = Math.ceil((elementsPerScreen / elements) * barLength);
 		this.maxStep = barLength - thumbLength + 1;
 		this.stepAmount = Std.int((elements - elementsPerScreen) / (maxStep - 1));
 		this.currentStep = 0;
+
+		super(parent.x + x, parent.y + y + thumbLength / 2);
+
+		super.attach(parent, x, y + Std.int(thumbLength / 2));
 
 		loadGraphic("assets/images/box/box_1_thumb.png");
 		setGraphicSize(BaseWindow.SCROLL_WIDTH, thumbLength);

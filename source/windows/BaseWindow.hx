@@ -1,5 +1,9 @@
 package windows;
 
+import flixel.system.FlxAssets;
+import openfl.geom.Matrix;
+import openfl.geom.Point;
+import openfl.display.BitmapData;
 import utils.Hitbox;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -12,6 +16,21 @@ enum WindowState {
 	Dragging;
 }
 
+enum WindowTile {
+	TOP_LEFT;
+	TOP_MIDDLE;
+	TOP_RIGHT;
+	TOP_RIGHT_SCROLL;
+	MIDDLE_LEFT;
+	MIDDLE_MIDDLE;
+	MIDDLE_RIGHT;
+	MIDDLE_RIGHT_SCROLL;
+	BOTTOM_LEFT;
+	BOTTOM_MIDDLE;
+	BOTTOM_RIGHT;
+	BOTTOM_RIGHT_SCROLL;
+}
+
 abstract class BaseWindow extends FlxSprite {
 	// NOTE: Offsets based on the window graphics.
 	public static inline final OFFSET_TOP:Int = 6;
@@ -22,6 +41,7 @@ abstract class BaseWindow extends FlxSprite {
 	public static inline final OFFSET_CONTENT_X:Int = Global.CELL_SIZE - OFFSET_SIDE;
 	public static inline final OFFSET_CONTENT_Y:Int = Global.CELL_SIZE - OFFSET_TOP;
 	public static inline final SCROLL_WIDTH:Int = 4;
+	public static var bitmaps:haxe.ds.Map<WindowTile, BitmapData> = new Map();
 
 	public var depth:Int;
 	public var currentState:WindowState;
@@ -69,10 +89,10 @@ abstract class BaseWindow extends FlxSprite {
 		this.heightInPixels = Global.CELL_SIZE * (height + 2) - (OFFSET_TOP + OFFSET_BOTTOM);
 
 		x0 = -OFFSET_SIDE;
-		x1 = Std.int(Global.CELL_SIZE / 2) * (widthInTiles + 1) - OFFSET_SIDE;
+		x1 = Global.CELL_SIZE - OFFSET_SIDE;
 		x2 = Global.CELL_SIZE * (widthInTiles + 1) - OFFSET_SIDE;
 		y0 = -OFFSET_TOP;
-		y1 = Std.int(Global.CELL_SIZE / 2) * (heightInTiles + 1) - OFFSET_TOP;
+		y1 = Global.CELL_SIZE - OFFSET_TOP;
 		y2 = Global.CELL_SIZE * (heightInTiles + 1) - OFFSET_TOP;
 
 		// GRAPHICS
@@ -143,66 +163,15 @@ abstract class BaseWindow extends FlxSprite {
 			scrollbar.kill();
 	}
 
-	private function makeWindowGraphic() {
-		makeGraphic(widthInPixels, heightInPixels, FlxColor.TRANSPARENT);
-
-		// NOTE: Is it possible to stamp the bitmap directly, instead through sprites?
-		var _tileTL:FlxSprite = new FlxSprite("assets/images/box/box_1_tl.png");
-		var _tileTM:FlxSprite = new FlxSprite("assets/images/box/box_1_tm.png");
-		var _tileTR:FlxSprite = new FlxSprite("assets/images/box/box_1_tr.png");
-		var _tileML:FlxSprite = new FlxSprite("assets/images/box/box_1_ml.png");
-		var _tileMM:FlxSprite = new FlxSprite("assets/images/box/box_1_mm.png");
-		var _tileMR:FlxSprite = new FlxSprite("assets/images/box/box_1_mr.png");
-		var _tileBL:FlxSprite = new FlxSprite("assets/images/box/box_1_bl.png");
-		var _tileBM:FlxSprite = new FlxSprite("assets/images/box/box_1_bm.png");
-		var _tileBR:FlxSprite = new FlxSprite("assets/images/box/box_1_br.png");
-
-		_tileTM.scale.set(widthInTiles, 1);
-		_tileML.scale.set(1, heightInTiles);
-		_tileMM.scale.set(widthInTiles, heightInTiles);
-		_tileMR.scale.set(1, heightInTiles);
-		_tileBM.scale.set(widthInTiles, 1);
-
-		stamp(_tileTL, x0, y0);
-		stamp(_tileTM, x1, y0);
-		stamp(_tileTR, x2, y0);
-		stamp(_tileML, x0, y1);
-		stamp(_tileMM, x1, y1);
-		stamp(_tileMR, x2, y1);
-		stamp(_tileBL, x0, y2);
-		stamp(_tileBM, x1, y2);
-		stamp(_tileBR, x2, y2);
-
-		_tileTL.kill();
-		_tileTM.kill();
-		_tileTR.kill();
-		_tileML.kill();
-		_tileMM.kill();
-		_tileMR.kill();
-		_tileBL.kill();
-		_tileBM.kill();
-		_tileBR.kill();
-	}
-
 	public function addScrollbar():Void {
-		var _tileTR:FlxSprite = new FlxSprite("assets/images/box/box_1_tr_scroll.png");
-		var _tileMR:FlxSprite = new FlxSprite("assets/images/box/box_1_mr_scroll.png");
-		var _tileBR:FlxSprite = new FlxSprite("assets/images/box/box_1_br_scroll.png");
-
-		_tileMR.scale.set(1, heightInTiles);
-
-		stamp(_tileTR, x2, y0);
-		stamp(_tileMR, x2, y1);
-		stamp(_tileBR, x2, y2);
-
-		_tileTR.kill();
-		_tileMR.kill();
-		_tileBR.kill();
+		stampTile(TOP_RIGHT_SCROLL);
+		stampTile(MIDDLE_RIGHT_SCROLL);
+		stampTile(BOTTOM_RIGHT_SCROLL);
 
 		this.hitboxScroll = new Hitbox(this, x2 + OFFSET_SCROLL_X, Global.CELL_SIZE - OFFSET_TOP, SCROLL_WIDTH, heightInTiles * Global.CELL_SIZE);
 		this.hitboxScroll.scrollFactor.set(0, 0);
 
-		this.scrollbar = new Scrollbar(this, x2 + OFFSET_SCROLL_X, Global.CELL_SIZE - OFFSET_TOP, content.elementsPerScreen, content.elements);
+		this.scrollbar = new Scrollbar(this, x2 + OFFSET_SCROLL_X, y1, content.elementsPerScreen, content.elements);
 		this.scrollbar.scrollFactor.set(0, 0);
 	}
 
@@ -214,18 +183,6 @@ abstract class BaseWindow extends FlxSprite {
 		mouseOffsetX = Std.int(_mousePoint.x - x);
 		mouseOffsetY = Std.int(_mousePoint.y - y);
 		currentState = WindowState.Dragging;
-	}
-
-	private function handleDragging():Void {
-		var _mousePressed:Bool = FlxG.mouse.pressed;
-		var _mousePoint:FlxPoint = FlxG.mouse.getScreenPosition();
-
-		if (_mousePressed) {
-			setPosition(_mousePoint.x - mouseOffsetX, _mousePoint.y - mouseOffsetY);
-		} else {
-			dropSound.play();
-			currentState = WindowState.Idle;
-		}
 	}
 
 	public function handleInput(point:FlxPoint, click:Bool, scroll:Int):Void {
@@ -250,6 +207,86 @@ abstract class BaseWindow extends FlxSprite {
 				content.handleInput(point, click, scroll);
 			if (scrollbar != null)
 				scrollbar.handleInput(point, false, scroll);
+		}
+	}
+
+	private function handleDragging():Void {
+		var _mousePressed:Bool = FlxG.mouse.pressed;
+		var _mousePoint:FlxPoint = FlxG.mouse.getScreenPosition();
+
+		if (_mousePressed) {
+			setPosition(_mousePoint.x - mouseOffsetX, _mousePoint.y - mouseOffsetY);
+		} else {
+			dropSound.play();
+			currentState = WindowState.Idle;
+		}
+	}
+
+	private function stampTile(tile:WindowTile) {
+		var point = new Point();
+
+		point.x = switch (tile) {
+			case TOP_LEFT | MIDDLE_LEFT | BOTTOM_LEFT:
+				x0;
+			case TOP_MIDDLE | MIDDLE_MIDDLE | BOTTOM_MIDDLE:
+				x1;
+			case TOP_RIGHT | TOP_RIGHT_SCROLL | MIDDLE_RIGHT | MIDDLE_RIGHT_SCROLL | BOTTOM_RIGHT | BOTTOM_RIGHT_SCROLL:
+				x2;
+		}
+
+		point.y = switch (tile) {
+			case TOP_LEFT | TOP_MIDDLE | TOP_RIGHT | TOP_RIGHT_SCROLL:
+				y0;
+			case MIDDLE_LEFT | MIDDLE_MIDDLE | MIDDLE_RIGHT | MIDDLE_RIGHT_SCROLL:
+				y1;
+			case BOTTOM_LEFT | BOTTOM_MIDDLE | BOTTOM_RIGHT | BOTTOM_RIGHT_SCROLL:
+				y2;
+		}
+
+		switch (tile) {
+			case TOP_LEFT | TOP_RIGHT | TOP_RIGHT_SCROLL | BOTTOM_LEFT | BOTTOM_RIGHT | BOTTOM_RIGHT_SCROLL:
+				this.graphic.bitmap.copyPixels(bitmaps[tile], bitmaps[tile].rect, point);
+			case TOP_MIDDLE | BOTTOM_MIDDLE:
+				var matrix = new Matrix(widthInTiles, 0, 0, 1, point.x, point.y);
+				this.graphic.bitmap.draw(bitmaps[tile], matrix);
+			case MIDDLE_LEFT | MIDDLE_RIGHT | MIDDLE_RIGHT_SCROLL:
+				var matrix = new Matrix(1, 0, 0, heightInTiles, point.x, point.y);
+				this.graphic.bitmap.draw(bitmaps[tile], matrix);
+			case MIDDLE_MIDDLE:
+				var matrix = new Matrix(widthInTiles, 0, 0, heightInTiles, point.x, point.y);
+				this.graphic.bitmap.draw(bitmaps[tile], matrix);
+		}
+	}
+
+	private function makeWindowGraphic() {
+		makeGraphic(widthInPixels, heightInPixels, FlxColor.TRANSPARENT);
+
+		for (tile in WindowTile.createAll()) {
+			switch (tile) {
+				case TOP_RIGHT_SCROLL | MIDDLE_RIGHT_SCROLL | BOTTOM_RIGHT_SCROLL:
+				default:
+					stampTile(tile);
+			}
+		}
+	}
+
+	public static function loadTileAsset(tile:WindowTile, asset:String) {
+		bitmaps[tile] = FlxAssets.getBitmapData(asset);
+	}
+
+	public static function loadAllTileAssets() {
+		for (tile in WindowTile.createAll()) {
+			var name = tile.getName().toLowerCase();
+			var split = name.indexOf("_");
+
+			var asset = switch (tile) {
+				case TOP_RIGHT_SCROLL | MIDDLE_RIGHT_SCROLL | BOTTOM_RIGHT_SCROLL:
+					'assets/images/box/box_1_${name.substring(0, 1)}${name.substring(split + 1, split + 2)}_scroll.png';
+				default:
+					'assets/images/box/box_1_${name.substring(0, 1)}${name.substring(split + 1, split + 2)}.png';
+			}
+
+			loadTileAsset(tile, asset);
 		}
 	}
 }
