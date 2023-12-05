@@ -12,5 +12,9 @@
     "doWhile": "same",
     "tryBody": "same",
     "tryCatch": "next"
+  },
+  "indentation": {
+    "character": "    ",
+    "indentCaseLabels": false
   }
 }
