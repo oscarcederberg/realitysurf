@@ -40,16 +40,23 @@ abstract class BaseWindow extends FlxSprite {
     public static inline final OFFSET_SCROLL_X:Int = 4;
     public static inline final OFFSET_CONTENT_X:Int = Global.CELL_SIZE - OFFSET_SIDE;
     public static inline final OFFSET_CONTENT_Y:Int = Global.CELL_SIZE - OFFSET_TOP;
-    public static inline final SCROLL_WIDTH:Int = 4;
+    public static inline final SCROLL_SIDE:Int = 4;
     public static var bitmaps:haxe.ds.Map<WindowTile, BitmapData> = new Map();
 
-    public var depth:Int = 0;
     public var currentState:WindowState = Idle;
+    public var depth:Int = 0;
 
     public var widthInTiles:Int;
     public var heightInTiles:Int;
     public var widthInPixels:Int;
     public var heightInPixels:Int;
+
+    public var x0:Int;
+    public var x1:Int;
+    public var x2:Int;
+    public var y0:Int;
+    public var y1:Int;
+    public var y2:Int;
 
     var handler:WindowHandler;
 
@@ -62,14 +69,6 @@ abstract class BaseWindow extends FlxSprite {
 
     var hasScrollbar:Bool = false;
     var scrollbar:Scrollbar;
-    var scrollbarHitbox:Hitbox;
-
-    var x0:Int;
-    var x1:Int;
-    var x2:Int;
-    var y0:Int;
-    var y1:Int;
-    var y2:Int;
 
     var mouseOffset:FlxPoint;
 
@@ -115,6 +114,8 @@ abstract class BaseWindow extends FlxSprite {
     }
 
     override public function update(elapsed:Float):Void {
+        super.update(elapsed);
+
         if (currentState == WindowState.Dragging) {
             if (!handler.isWindowActive(this)) {
                 handler.setWindowAsActive(this);
@@ -137,11 +138,6 @@ abstract class BaseWindow extends FlxSprite {
         windowHitbox.update(elapsed);
         topbarHitbox.update(elapsed);
         closeHitbox.update(elapsed);
-        if (hasScrollbar) {
-            scrollbarHitbox.update(elapsed);
-        }
-
-        super.update(elapsed);
     }
 
     override public function draw():Void {
@@ -163,7 +159,6 @@ abstract class BaseWindow extends FlxSprite {
         closeHitbox.kill();
         if (hasScrollbar) {
             scrollbar.kill();
-            scrollbarHitbox.kill();
         }
         if (hasContent) {
             content.kill();
@@ -189,9 +184,6 @@ abstract class BaseWindow extends FlxSprite {
 
         scrollbar = new Scrollbar(this, x2 + OFFSET_SCROLL_X, y1, content.elementsPerScreen, content.elements);
         scrollbar.scrollFactor.set(0, 0);
-
-        scrollbarHitbox = new Hitbox(this, x2 + OFFSET_SCROLL_X, Global.CELL_SIZE - OFFSET_TOP, SCROLL_WIDTH, heightInTiles * Global.CELL_SIZE);
-        scrollbarHitbox.scrollFactor.set(0, 0);
     }
 
     public function activateDragging():Void {
@@ -220,7 +212,7 @@ abstract class BaseWindow extends FlxSprite {
         }
     }
 
-    public function handleInput(point:FlxPoint, click:Bool, scroll:Int):Void {
+    public function handleInput(point:FlxPoint, click:Bool, pressing:Bool, scroll:Int):Void {
         if (closeHitbox.overlapsPoint(point)) {
             if (click) {
                 handler.deleteWindow(this);
@@ -232,21 +224,26 @@ abstract class BaseWindow extends FlxSprite {
                     handler.setWindowAsActive(this);
                 }
             }
-        } else if (hasScrollbar && scrollbarHitbox.overlapsPoint(point)) {
-            scrollbar.handleInput(point, click, scroll);
-        } else if (windowHitbox.overlapsPoint(point)) {
+        } else {
             if (click) {
                 if (!handler.isWindowActive(this)) {
                     handler.setWindowAsActive(this);
                 }
             }
 
-            if (content != null) {
+            if (hasContent) {
                 content.handleInput(point, click, scroll);
             }
+
             if (hasScrollbar) {
-                scrollbar.handleInput(point, false, scroll);
+                scrollbar.handleInput(point, click, pressing, scroll);
             }
+        }
+    }
+
+    public function notifyScrollUpdate(step:Int):Void {
+        if (hasContent) {
+            content.notifyScrollUpdate(step);
         }
     }
 

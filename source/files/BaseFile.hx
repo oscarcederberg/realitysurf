@@ -38,12 +38,12 @@ abstract class BaseFile extends FlxSprite {
     }
 
     public override function update(elapsed:Float) {
+        super.update(elapsed);
+
         if (Global.stepsTaken != old_steps) {
             floatInPlace();
             y = start_y + delta_y;
         }
-
-        super.update(elapsed);
     }
 
     function floatInPlace() {

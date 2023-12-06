@@ -7,8 +7,8 @@ import lime.utils.Assets;
 
 class TextWindowContent extends BaseWindowContent {
     public static inline final OFFSET_SIDE = 2;
-    public static inline final OFFSET_TOP = 3;
-    public static inline final OFFSET_BOTTOM = 4;
+    public static inline final OFFSET_TOP = 1;
+    public static inline final OFFSET_BOTTOM = 1;
 
     public var lines:Array<String>;
     public var charsPerLine:Int;
@@ -23,17 +23,25 @@ class TextWindowContent extends BaseWindowContent {
         this.lines = _textFormatter.format(this.charsPerLine);
         this.elements = this.lines.length;
 
-        makeGraphic(parent.widthInTiles * Global.CELL_SIZE
-            + 2 * OFFSET_SIDE, parent.heightInTiles * Global.CELL_SIZE
-            + OFFSET_TOP
-            + OFFSET_BOTTOM,
-            FlxColor.TRANSPARENT);
         makeText();
     }
 
-    function makeText():Void {
+    override public function notifyScrollUpdate(step:Int) {
+        currentElement = step;
+
+        makeText();
+    }
+
+    private function makeText():Void {
+        makeGraphic(
+            window.widthInTiles * Global.CELL_SIZE + 2 * OFFSET_SIDE,
+            window.heightInTiles * Global.CELL_SIZE + OFFSET_TOP + OFFSET_BOTTOM,
+            Global.RGB_GREEN,
+            true
+        );
+
         for (i in 0...elementsPerScreen) {
-            var text:FlxText = new FlxText(0, 0, 0, lines[i], 8);
+            var text:FlxText = new FlxText(0, 0, 0, lines[currentElement + i], 8);
             text.height = 8;
             text.color = Global.RGB_GREEN;
             text.setBorderStyle(FlxTextBorderStyle.OUTLINE, Global.RGB_BLACK);

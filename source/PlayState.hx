@@ -29,8 +29,9 @@ class PlayState extends FlxState {
     }
 
     override public function update(elapsed:Float) {
-        windowHandler.update(elapsed);
         super.update(elapsed);
+
+        windowHandler.update(elapsed);
 
         sortEntities();
     }

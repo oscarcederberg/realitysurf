@@ -64,11 +64,11 @@ class Player extends FlxSprite {
     }
 
     override public function update(elapsed:Float):Void {
+        super.update(elapsed);
+
         midPoint = new FlxPoint(x + Global.CELL_SIZE / 2, y + Global.CELL_SIZE + OFFSET_Y);
         handleInput();
         animate();
-
-        super.update(elapsed);
     }
 
     public function handleInput() {

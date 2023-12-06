@@ -10,6 +10,7 @@ class AttachableObject extends FlxObject implements Attachable {
 
     override function update(elapsed:Float) {
         super.update(elapsed);
+
         updateAttachment();
     }
 
