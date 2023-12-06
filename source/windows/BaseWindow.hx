@@ -43,21 +43,26 @@ abstract class BaseWindow extends FlxSprite {
     public static inline final SCROLL_WIDTH:Int = 4;
     public static var bitmaps:haxe.ds.Map<WindowTile, BitmapData> = new Map();
 
-    public var depth:Int;
-    public var currentState:WindowState;
-    public var hitboxWindow:Hitbox;
-    public var hitboxTopbar:Hitbox;
-    public var hitboxScroll:Hitbox;
-    public var hitboxClose:Hitbox;
-
-    var handler:WindowHandler;
-    var content:BaseWindowContent;
-    var scrollbar:Scrollbar;
+    public var depth:Int = 0;
+    public var currentState:WindowState = Idle;
 
     public var widthInTiles:Int;
     public var heightInTiles:Int;
     public var widthInPixels:Int;
     public var heightInPixels:Int;
+
+    var handler:WindowHandler;
+
+    var hasContent:Bool = false;
+    var content:BaseWindowContent;
+
+    var windowHitbox:Hitbox;
+    var topbarHitbox:Hitbox;
+    var closeHitbox:Hitbox;
+
+    var hasScrollbar:Bool = false;
+    var scrollbar:Scrollbar;
+    var scrollbarHitbox:Hitbox;
 
     var x0:Int;
     var x1:Int;
@@ -66,8 +71,7 @@ abstract class BaseWindow extends FlxSprite {
     var y1:Int;
     var y2:Int;
 
-    var mouseOffsetX:Int;
-    var mouseOffsetY:Int;
+    var mouseOffset:FlxPoint;
 
     var openSound:FlxSound;
     var dragSound:FlxSound;
@@ -77,34 +81,29 @@ abstract class BaseWindow extends FlxSprite {
     public function new(x:Float, y:Float, width:Int, height:Int, handler:WindowHandler) {
         super(x, y);
 
-        this.depth = 0;
-        this.currentState = WindowState.Idle;
-        this.mouseOffsetX = 0;
-        this.mouseOffsetY = 0;
-
         this.handler = handler;
         this.widthInTiles = width;
         this.heightInTiles = height;
         this.widthInPixels = Global.CELL_SIZE * (width + 2) - (OFFSET_SIDE * 2);
         this.heightInPixels = Global.CELL_SIZE * (height + 2) - (OFFSET_TOP + OFFSET_BOTTOM);
 
-        x0 = -OFFSET_SIDE;
-        x1 = Global.CELL_SIZE - OFFSET_SIDE;
-        x2 = Global.CELL_SIZE * (widthInTiles + 1) - OFFSET_SIDE;
-        y0 = -OFFSET_TOP;
-        y1 = Global.CELL_SIZE - OFFSET_TOP;
-        y2 = Global.CELL_SIZE * (heightInTiles + 1) - OFFSET_TOP;
+        this.x0 = -OFFSET_SIDE;
+        this.x1 = Global.CELL_SIZE - OFFSET_SIDE;
+        this.x2 = Global.CELL_SIZE * (widthInTiles + 1) - OFFSET_SIDE;
+        this.y0 = -OFFSET_TOP;
+        this.y1 = Global.CELL_SIZE - OFFSET_TOP;
+        this.y2 = Global.CELL_SIZE * (heightInTiles + 1) - OFFSET_TOP;
 
         // GRAPHICS
         makeWindowGraphic();
 
         // COLLISION BOXES
-        this.hitboxWindow = new Hitbox(this, 0, 0, widthInPixels, heightInPixels);
-        this.hitboxWindow.scrollFactor.set(0, 0);
-        this.hitboxTopbar = new Hitbox(this, 0, 0, widthInPixels, OFFSET_BAR);
-        this.hitboxTopbar.scrollFactor.set(0, 0);
-        this.hitboxClose = new Hitbox(this, widthInPixels - OFFSET_BAR, 0, OFFSET_BAR, OFFSET_BAR);
-        this.hitboxClose.scrollFactor.set(0, 0);
+        this.windowHitbox = new Hitbox(this, 0, 0, widthInPixels, heightInPixels);
+        this.topbarHitbox = new Hitbox(this, 0, 0, widthInPixels, OFFSET_BAR);
+        this.closeHitbox = new Hitbox(this, widthInPixels - OFFSET_BAR, 0, OFFSET_BAR, OFFSET_BAR);
+        this.windowHitbox.scrollFactor.set(0, 0);
+        this.topbarHitbox.scrollFactor.set(0, 0);
+        this.closeHitbox.scrollFactor.set(0, 0);
 
         // SOUNDS
         this.openSound = FlxG.sound.load("assets/sounds/open.wav");
@@ -117,8 +116,10 @@ abstract class BaseWindow extends FlxSprite {
 
     override public function update(elapsed:Float):Void {
         if (currentState == WindowState.Dragging) {
-            if (!handler.isWindowActive(this))
+            if (!handler.isWindowActive(this)) {
                 handler.setWindowAsActive(this);
+            }
+
             handleDragging();
         }
 
@@ -126,53 +127,68 @@ abstract class BaseWindow extends FlxSprite {
         x = Math.min(Math.max(x, 0), FlxG.width - widthInPixels);
         y = Math.min(Math.max(y, Global.CELL_SIZE), FlxG.height - Global.CELL_SIZE - widthInPixels);
 
-        if (content != null)
+        if (hasContent)
             content.update(elapsed);
-        if (scrollbar != null)
+        if (hasScrollbar)
             scrollbar.update(elapsed);
 
-        hitboxWindow.update(elapsed);
-        hitboxTopbar.update(elapsed);
-        hitboxClose.update(elapsed);
-        if (hitboxScroll != null)
-            hitboxScroll.update(elapsed);
+        windowHitbox.update(elapsed);
+        topbarHitbox.update(elapsed);
+        closeHitbox.update(elapsed);
+        if (hasScrollbar) {
+            scrollbarHitbox.update(elapsed);
+        }
 
         super.update(elapsed);
     }
 
     override public function draw():Void {
         super.draw();
-        if (content != null)
+        if (hasContent) {
             content.draw();
-        if (scrollbar != null)
+        }
+        if (hasScrollbar) {
             scrollbar.draw();
+        }
     }
 
     override public function kill():Void {
         closeSound.play();
 
         super.kill();
-        hitboxWindow.kill();
-        hitboxTopbar.kill();
-        hitboxClose.kill();
-        if (hitboxScroll != null)
-            hitboxScroll.kill();
-        if (content != null)
-            content.kill();
-        if (scrollbar != null)
+        windowHitbox.kill();
+        topbarHitbox.kill();
+        closeHitbox.kill();
+        if (hasScrollbar) {
             scrollbar.kill();
+            scrollbarHitbox.kill();
+        }
+        if (hasContent) {
+            content.kill();
+        }
+    }
+
+    public function addContent(content:BaseWindowContent):Void {
+        hasContent = true;
+        this.content = content;
+        content.scrollFactor.set(0, 0);
+
+        if (content.elements > content.elementsPerScreen)
+            addScrollbar();
     }
 
     public function addScrollbar():Void {
+        hasScrollbar = true;
+
         stampTile(TOP_RIGHT_SCROLL);
         stampTile(MIDDLE_RIGHT_SCROLL);
         stampTile(BOTTOM_RIGHT_SCROLL);
 
-        this.hitboxScroll = new Hitbox(this, x2 + OFFSET_SCROLL_X, Global.CELL_SIZE - OFFSET_TOP, SCROLL_WIDTH, heightInTiles * Global.CELL_SIZE);
-        this.hitboxScroll.scrollFactor.set(0, 0);
+        scrollbar = new Scrollbar(this, x2 + OFFSET_SCROLL_X, y1, content.elementsPerScreen, content.elements);
+        scrollbar.scrollFactor.set(0, 0);
 
-        this.scrollbar = new Scrollbar(this, x2 + OFFSET_SCROLL_X, y1, content.elementsPerScreen, content.elements);
-        this.scrollbar.scrollFactor.set(0, 0);
+        scrollbarHitbox = new Hitbox(this, x2 + OFFSET_SCROLL_X, Global.CELL_SIZE - OFFSET_TOP, SCROLL_WIDTH, heightInTiles * Global.CELL_SIZE);
+        scrollbarHitbox.scrollFactor.set(0, 0);
     }
 
     public function activateDragging():Void {
@@ -180,34 +196,12 @@ abstract class BaseWindow extends FlxSprite {
 
         var _mousePoint:FlxPoint = FlxG.mouse.getScreenPosition();
 
-        mouseOffsetX = Std.int(_mousePoint.x - x);
-        mouseOffsetY = Std.int(_mousePoint.y - y);
+        mouseOffset = _mousePoint.subtract(x, y);
         currentState = WindowState.Dragging;
     }
 
-    public function handleInput(point:FlxPoint, click:Bool, scroll:Int):Void {
-        if (hitboxClose.overlapsPoint(point)) {
-            if (click)
-                handler.deleteWindow(this);
-        } else if (hitboxTopbar.overlapsPoint(point)) {
-            if (click) {
-                activateDragging();
-                if (!handler.isWindowActive(this))
-                    handler.setWindowAsActive(this);
-            }
-        } else if (hitboxScroll != null && hitboxScroll.overlapsPoint(point)) {
-            scrollbar.handleInput(point, click, scroll);
-        } else if (hitboxWindow.overlapsPoint(point)) {
-            if (click) {
-                if (!handler.isWindowActive(this))
-                    handler.setWindowAsActive(this);
-            }
-
-            if (content != null)
-                content.handleInput(point, click, scroll);
-            if (scrollbar != null)
-                scrollbar.handleInput(point, false, scroll);
-        }
+    public function getWindowHitbox():Hitbox {
+        return windowHitbox;
     }
 
     private function handleDragging():Void {
@@ -215,17 +209,56 @@ abstract class BaseWindow extends FlxSprite {
         var _mousePoint:FlxPoint = FlxG.mouse.getScreenPosition();
 
         if (_mousePressed) {
-            setPosition(_mousePoint.x - mouseOffsetX, _mousePoint.y - mouseOffsetY);
+            var _newPosition = _mousePoint.subtractPoint(mouseOffset);
+            setPosition(_newPosition.x, _newPosition.y);
         } else {
             dropSound.play();
             currentState = WindowState.Idle;
         }
     }
 
-    private function stampTile(tile:WindowTile) {
-        var point = new Point();
+    public function handleInput(point:FlxPoint, click:Bool, scroll:Int):Void {
+        if (closeHitbox.overlapsPoint(point)) {
+            if (click)
+                handler.deleteWindow(this);
+        } else if (topbarHitbox.overlapsPoint(point)) {
+            if (click) {
+                activateDragging();
+                if (!handler.isWindowActive(this))
+                    handler.setWindowAsActive(this);
+            }
+        } else if (hasScrollbar && scrollbarHitbox.overlapsPoint(point)) {
+            scrollbar.handleInput(point, click, scroll);
+        } else if (windowHitbox.overlapsPoint(point)) {
+            if (click) {
+                if (!handler.isWindowActive(this))
+                    handler.setWindowAsActive(this);
+            }
 
-        point.x = switch (tile) {
+            if (content != null)
+                content.handleInput(point, click, scroll);
+            if (hasScrollbar)
+                scrollbar.handleInput(point, false, scroll);
+        }
+    }
+
+    private function makeWindowGraphic() {
+        makeGraphic(widthInPixels, heightInPixels, FlxColor.TRANSPARENT);
+
+        for (tile in WindowTile.createAll()) {
+            switch (tile) {
+            case TOP_RIGHT_SCROLL | MIDDLE_RIGHT_SCROLL | BOTTOM_RIGHT_SCROLL:
+                // do nothing
+            default:
+                stampTile(tile);
+            }
+        }
+    }
+
+    private function stampTile(tile:WindowTile) {
+        var _point = new Point();
+
+        _point.x = switch (tile) {
         case TOP_LEFT | MIDDLE_LEFT | BOTTOM_LEFT:
             x0;
         case TOP_MIDDLE | MIDDLE_MIDDLE | BOTTOM_MIDDLE:
@@ -234,7 +267,7 @@ abstract class BaseWindow extends FlxSprite {
             x2;
         }
 
-        point.y = switch (tile) {
+        _point.y = switch (tile) {
         case TOP_LEFT | TOP_MIDDLE | TOP_RIGHT | TOP_RIGHT_SCROLL:
             y0;
         case MIDDLE_LEFT | MIDDLE_MIDDLE | MIDDLE_RIGHT | MIDDLE_RIGHT_SCROLL:
@@ -245,48 +278,32 @@ abstract class BaseWindow extends FlxSprite {
 
         switch (tile) {
         case TOP_LEFT | TOP_RIGHT | TOP_RIGHT_SCROLL | BOTTOM_LEFT | BOTTOM_RIGHT | BOTTOM_RIGHT_SCROLL:
-            this.graphic.bitmap.copyPixels(bitmaps[tile], bitmaps[tile].rect, point);
+            this.graphic.bitmap.copyPixels(bitmaps[tile], bitmaps[tile].rect, _point);
         case TOP_MIDDLE | BOTTOM_MIDDLE:
-            var matrix = new Matrix(widthInTiles, 0, 0, 1, point.x, point.y);
-            this.graphic.bitmap.draw(bitmaps[tile], matrix);
+            var _matrix = new Matrix(widthInTiles, 0, 0, 1, _point.x, _point.y);
+            this.graphic.bitmap.draw(bitmaps[tile], _matrix);
         case MIDDLE_LEFT | MIDDLE_RIGHT | MIDDLE_RIGHT_SCROLL:
-            var matrix = new Matrix(1, 0, 0, heightInTiles, point.x, point.y);
-            this.graphic.bitmap.draw(bitmaps[tile], matrix);
+            var _matrix = new Matrix(1, 0, 0, heightInTiles, _point.x, _point.y);
+            this.graphic.bitmap.draw(bitmaps[tile], _matrix);
         case MIDDLE_MIDDLE:
-            var matrix = new Matrix(widthInTiles, 0, 0, heightInTiles, point.x, point.y);
-            this.graphic.bitmap.draw(bitmaps[tile], matrix);
+            var _matrix = new Matrix(widthInTiles, 0, 0, heightInTiles, _point.x, _point.y);
+            this.graphic.bitmap.draw(bitmaps[tile], _matrix);
         }
-    }
-
-    private function makeWindowGraphic() {
-        makeGraphic(widthInPixels, heightInPixels, FlxColor.TRANSPARENT);
-
-        for (tile in WindowTile.createAll()) {
-            switch (tile) {
-            case TOP_RIGHT_SCROLL | MIDDLE_RIGHT_SCROLL | BOTTOM_RIGHT_SCROLL:
-            default:
-                stampTile(tile);
-            }
-        }
-    }
-
-    public static function loadTileAsset(tile:WindowTile, asset:String) {
-        bitmaps[tile] = FlxAssets.getBitmapData(asset);
     }
 
     public static function loadAllTileAssets() {
-        for (tile in WindowTile.createAll()) {
-            var name = tile.getName().toLowerCase();
-            var split = name.indexOf("_");
+        for (_tile in WindowTile.createAll()) {
+            var _name = _tile.getName().toLowerCase();
+            var _split = _name.indexOf("_");
 
-            var asset = switch (tile) {
+            var _asset = switch (_tile) {
             case TOP_RIGHT_SCROLL | MIDDLE_RIGHT_SCROLL | BOTTOM_RIGHT_SCROLL:
-                'assets/images/box/box_1_${name.substring(0, 1)}${name.substring(split + 1, split + 2)}_scroll.png';
+                'assets/images/box/box_1_${_name.substring(0, 1)}${_name.substring(_split + 1, _split + 2)}_scroll.png';
             default:
-                'assets/images/box/box_1_${name.substring(0, 1)}${name.substring(split + 1, split + 2)}.png';
+                'assets/images/box/box_1_${_name.substring(0, 1)}${_name.substring(_split + 1, _split + 2)}.png';
             }
 
-            loadTileAsset(tile, asset);
+            bitmaps[_tile] = FlxAssets.getBitmapData(_asset);
         }
     }
 }

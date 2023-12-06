@@ -27,7 +27,7 @@ class WindowHandler {
 
         if (_click || _scroll != 0) {
             for (window in stack) {
-                if (window.hitboxWindow.overlapsPoint(_point)) {
+                if (window.getWindowHitbox().overlapsPoint(_point)) {
                     window.handleInput(_point, _click, _scroll);
                     break;
                 }
@@ -38,10 +38,10 @@ class WindowHandler {
     public function sortWindows():Void {
         var index:Int = 0;
         for (window in stack) {
-            if (window.depth != index)
-                window.depth = index;
+            window.depth = index;
             index++;
         }
+
         // NOTE: Is this necessary? Only one window is moved at a time.
         windows.members.sort(function(w1, w2) return w2.depth - w1.depth);
     }

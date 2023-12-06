@@ -47,15 +47,8 @@ class Scrollbar extends AttachableSprite {
     private function handleDragging():Void {}
 
     public function handleInput(point:FlxPoint, click:Bool, scroll:Int) {
-        if (scroll < 0) {
-            if (currentStep < maxStep) {
-                currentStep++;
-            }
-        } else if (scroll > 0) {
-            if (currentStep > 0) {
-                currentStep--;
-            }
-        }
+        currentStep -= scroll;
+        currentStep = Std.int(Math.min(maxStep, Math.max(0, currentStep)));
 
         relativeY = startY + currentStep;
     }
