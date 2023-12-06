@@ -1,10 +1,10 @@
 package;
 
+import flixel.sound.FlxSound;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
-import flixel.system.FlxSound;
 import flixel.util.FlxDirectionFlags;
 import flixel.util.FlxTimer;
 
