@@ -127,10 +127,12 @@ abstract class BaseWindow extends FlxSprite {
         x = Math.min(Math.max(x, 0), FlxG.width - widthInPixels);
         y = Math.min(Math.max(y, Global.CELL_SIZE), FlxG.height - Global.CELL_SIZE - widthInPixels);
 
-        if (hasContent)
+        if (hasContent) {
             content.update(elapsed);
-        if (hasScrollbar)
+        }
+        if (hasScrollbar) {
             scrollbar.update(elapsed);
+        }
 
         windowHitbox.update(elapsed);
         topbarHitbox.update(elapsed);
@@ -173,8 +175,9 @@ abstract class BaseWindow extends FlxSprite {
         this.content = content;
         content.scrollFactor.set(0, 0);
 
-        if (content.elements > content.elementsPerScreen)
+        if (content.elements > content.elementsPerScreen) {
             addScrollbar();
+        }
     }
 
     public function addScrollbar():Void {
@@ -219,26 +222,31 @@ abstract class BaseWindow extends FlxSprite {
 
     public function handleInput(point:FlxPoint, click:Bool, scroll:Int):Void {
         if (closeHitbox.overlapsPoint(point)) {
-            if (click)
+            if (click) {
                 handler.deleteWindow(this);
+            }
         } else if (topbarHitbox.overlapsPoint(point)) {
             if (click) {
                 activateDragging();
-                if (!handler.isWindowActive(this))
+                if (!handler.isWindowActive(this)) {
                     handler.setWindowAsActive(this);
+                }
             }
         } else if (hasScrollbar && scrollbarHitbox.overlapsPoint(point)) {
             scrollbar.handleInput(point, click, scroll);
         } else if (windowHitbox.overlapsPoint(point)) {
             if (click) {
-                if (!handler.isWindowActive(this))
+                if (!handler.isWindowActive(this)) {
                     handler.setWindowAsActive(this);
+                }
             }
 
-            if (content != null)
+            if (content != null) {
                 content.handleInput(point, click, scroll);
-            if (hasScrollbar)
+            }
+            if (hasScrollbar) {
                 scrollbar.handleInput(point, false, scroll);
+            }
         }
     }
 

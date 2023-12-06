@@ -25,8 +25,9 @@ class AttachableObject extends FlxObject implements Attachable {
     }
 
     public function updateAttachment() {
-        if (this.attached)
+        if (this.attached) {
             setPosition(parent.x + relativeX, parent.y + relativeY);
+        }
     }
 
     public function isAttached():Bool {
