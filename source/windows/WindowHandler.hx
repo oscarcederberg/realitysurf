@@ -48,15 +48,20 @@ class WindowHandler {
     public function createWindow(file:BaseFile):Void {
         var windowWidth:Int = file.windowWidth;
         var windowHeight:Int = file.windowHeight;
-        var windowX:Int = random.int(0, FlxG.width - Global.CELL_SIZE * (windowWidth + 2) + (BaseWindow.OFFSET_SIDE * 2));
+        var windowX:Int = random.int(0,
+            FlxG.width - Global.CELL_SIZE * (windowWidth
+                + 2) + (BaseWindow.OFFSET_SIDE * 2));
         var windowY:Int = random.int(Global.CELL_SIZE,
-            FlxG.height - Global.CELL_SIZE * (windowHeight + 2) - (BaseWindow.OFFSET_TOP + BaseWindow.OFFSET_BOTTOM));
+            FlxG.height - Global.CELL_SIZE * (windowHeight
+                + 2) - (BaseWindow.OFFSET_TOP + BaseWindow.OFFSET_BOTTOM));
 
         var window:BaseWindow = switch (file.fileType) {
         case Text:
-            new TextWindow(windowX, windowY, windowWidth, windowHeight, this, Global.levelAssetsPath + file.fileData);
+            new TextWindow(windowX, windowY, windowWidth, windowHeight, this,
+                Global.levelAssetsPath + file.fileData);
         case Image:
-            new ImageWindow(windowX, windowY, windowWidth, windowHeight, this, Global.levelAssetsPath + file.fileData);
+            new ImageWindow(windowX, windowY, windowWidth, windowHeight, this,
+                Global.levelAssetsPath + file.fileData);
         }
 
         windows.add(window);

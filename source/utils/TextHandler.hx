@@ -22,7 +22,8 @@ class TextHandler {
         var _builder = new StringBuilder();
 
         for (_word in _words) {
-            if (_currentLineLength + _word.length > charsPerLine && _word != "\n") {
+            if (_currentLineLength + _word.length > charsPerLine
+                && _word != "\n") {
                 if (_currentLineLength > 0) {
                     _builder.newLine();
                     _currentLineLength = 0;
@@ -48,7 +49,8 @@ class TextHandler {
     }
 
     // https://stackoverflow.com/a/17635/14198301
-    private function split(text:String, delimiters:Array<String>):Array<String> {
+    private function split(text:String,
+            delimiters:Array<String>):Array<String> {
         var _parts = new Array<String>();
         var _startIndex = 0;
 

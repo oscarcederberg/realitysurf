@@ -40,10 +40,11 @@ class Player extends FlxSprite {
         this.facing = FlxDirectionFlags.DOWN;
         this.stepsLeft = STEPS;
         this.moveSpeed = SPEED_WALK;
-        this.midPoint = new FlxPoint(x + Global.CELL_SIZE / 2, y + Global.CELL_SIZE + OFFSET_Y);
+        this.midPoint = new FlxPoint(x + Global.CELL_SIZE / 2,
+            y + Global.CELL_SIZE + OFFSET_Y);
 
-        // GRAPHICS
-        loadGraphic("assets/images/player.png", true, Global.CELL_SIZE, 2 * Global.CELL_SIZE);
+        loadGraphic("assets/images/player.png", true, Global.CELL_SIZE,
+            2 * Global.CELL_SIZE);
         animation.add("idle_up", [0]);
         animation.add("move_up", [1, 2, 3, 4], moveSpeed);
         animation.add("idle_left", [5]);
@@ -54,7 +55,6 @@ class Player extends FlxSprite {
         animation.add("move_right", [16, 17, 18, 19], moveSpeed);
         animation.play("idle_down");
 
-        // SOUNDS
         stepIndex = 0;
         stepSounds = [
             FlxG.sound.load("assets/sounds/step_0.wav"),
@@ -66,7 +66,8 @@ class Player extends FlxSprite {
     override public function update(elapsed:Float):Void {
         super.update(elapsed);
 
-        midPoint = new FlxPoint(x + Global.CELL_SIZE / 2, y + Global.CELL_SIZE + OFFSET_Y);
+        midPoint = new FlxPoint(x + Global.CELL_SIZE / 2,
+            y + Global.CELL_SIZE + OFFSET_Y);
         handleInput();
         animate();
     }
@@ -111,7 +112,8 @@ class Player extends FlxSprite {
                     moveSpeed = (_shift ? SPEED_RUN : SPEED_WALK);
                     currentState = (_shift ? PlayerState.Running : PlayerState.Walking);
                     playStepSound();
-                    new FlxTimer().start(1 / moveSpeed, (_) -> playStepSound(), 3);
+                    new FlxTimer().start(1 / moveSpeed,
+                        (_) -> playStepSound(), 3);
                     move();
                 } else {
                     collideSound.play();
@@ -195,7 +197,8 @@ class Player extends FlxSprite {
 
     private function isBlocked(point:FlxPoint):Bool {
         // NOTE: Do we have to check through collisions? 2D-structure instead maybe?
-        return !parent.level.tiles.overlapsPoint(point) || parent.level.files.overlapsPoint(point);
+        return !parent.level.tiles.overlapsPoint(point)
+            || parent.level.files.overlapsPoint(point);
     }
 
     private function playStepSound() {

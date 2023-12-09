@@ -8,7 +8,7 @@ class ImageFile extends BaseFile {
 
         this.fileType = FileType.Image;
 
-        // GRAPHICS
-        loadGraphic("assets/images/files/image.png", false, Global.CELL_SIZE, Global.CELL_SIZE);
+        loadGraphic("assets/images/files/image.png", false, Global.CELL_SIZE,
+            Global.CELL_SIZE);
     }
 }

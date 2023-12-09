@@ -8,7 +8,7 @@ class TextFile extends BaseFile {
 
         this.fileType = FileType.Text;
 
-        // GRAPHICS
-        loadGraphic("assets/images/files/text.png", false, Global.CELL_SIZE, Global.CELL_SIZE);
+        loadGraphic("assets/images/files/text.png", false, Global.CELL_SIZE,
+            Global.CELL_SIZE);
     }
 }

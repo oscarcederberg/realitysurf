@@ -18,7 +18,8 @@ class LevelMap {
     public var entities:FlxSpriteGroup;
 
     public function new(file:String) {
-        this.map = new FlxOgmo3Loader("assets/data/REALITYSURF.ogmo", "assets/data/" + file);
+        this.map = new FlxOgmo3Loader("assets/data/REALITYSURF.ogmo",
+            "assets/data/" + file);
         this.name = Std.string(map.getLevelValue("name"));
         this.tilemap = map.loadTilemap("assets/data/OGMO/tiles.png", "tiles");
         this.filefactory = new FileFactory();

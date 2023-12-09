@@ -37,7 +37,10 @@ class PlayState extends FlxState {
     }
 
     public function sortEntities() {
-        level.entities.sort((_, obj1, obj2) -> FlxSort.byValues(FlxSort.ASCENDING, obj1.y + obj1.height, obj2.y + obj2.height));
+        level.entities.sort((_, obj1,
+                obj2) -> FlxSort.byValues(FlxSort.ASCENDING, obj1.y +
+                obj1.height,
+                obj2.y + obj2.height));
     }
 
     public function createWindow(file:BaseFile) {
