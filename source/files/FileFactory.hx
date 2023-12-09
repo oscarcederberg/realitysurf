@@ -17,7 +17,7 @@ class FileFactory {
         case Image:
             return new ImageFile(x, y, values);
         default:
-            trace('FileFactory: filetype \'$filetype\' not found');
+            trace('FileFactory: filetype \'$fileType\' not found');
             return new TextFile(x, y, values);
         }
     }
