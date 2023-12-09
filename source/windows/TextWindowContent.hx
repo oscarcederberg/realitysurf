@@ -17,11 +17,11 @@ class TextWindowContent extends BaseWindowContent {
         super(parent, relativeX - OFFSET_SIDE, relativeY - OFFSET_TOP);
 
         this.charsPerLine = parent.widthInTiles * 2;
-        this.elementsPerScreen = parent.heightInTiles * 2 - 1;
+        this.rowsPerScreen = parent.heightInTiles * 2 - 1;
 
         var _textFormatter = new TextHandler(Assets.getText(assetPath));
         this.lines = _textFormatter.format(this.charsPerLine);
-        this.elements = this.lines.length;
+        this.numRows = this.lines.length;
 
         makeText();
     }
@@ -33,14 +33,13 @@ class TextWindowContent extends BaseWindowContent {
     }
 
     private function makeText():Void {
-        makeGraphic(
-            window.widthInTiles * Global.CELL_SIZE + 2 * OFFSET_SIDE,
-            window.heightInTiles * Global.CELL_SIZE + OFFSET_TOP + OFFSET_BOTTOM,
-            Global.RGB_GREEN,
-            true
-        );
+        makeGraphic(window.widthInTiles * Global.CELL_SIZE
+            + 2 * OFFSET_SIDE, window.heightInTiles * Global.CELL_SIZE
+            + OFFSET_TOP
+            + OFFSET_BOTTOM,
+            Global.RGB_GREEN, true);
 
-        for (i in 0...elementsPerScreen) {
+        for (i in 0...rowsPerScreen) {
             var text:FlxText = new FlxText(0, 0, 0, lines[currentElement + i], 8);
             text.height = 8;
             text.color = Global.RGB_GREEN;

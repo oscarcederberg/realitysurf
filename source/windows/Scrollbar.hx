@@ -12,15 +12,17 @@ enum ScrollbarState {
 }
 
 class Scrollbar extends AttachableSprite {
+    public static inline final MIN_THUMB_LENGTH = 4;
+
     var currentState:ScrollbarState = Idle;
 
     var mouseOffset:FlxPoint;
     var startY:Int;
-    var barLength:Int;
+    var scrollbarLength:Int;
     var thumbLength:Int;
     var currentStep:Int;
     var maxStep:Int;
-    var stepAmount:Int;
+    var rowsPerStep:Int;
 
     var scrollbarHitbox:Hitbox;
     var upHitbox:Hitbox;
@@ -28,11 +30,17 @@ class Scrollbar extends AttachableSprite {
 
     var window:BaseWindow;
 
-    public function new(parent:BaseWindow, relativeX:Int, relativeY:Int, elementsPerScreen:Int, elements:Int) {
-        this.barLength = parent.heightInTiles * Global.CELL_SIZE;
-        this.thumbLength = Math.ceil((elementsPerScreen / elements) * barLength) - 2;
-        this.maxStep = barLength - thumbLength;
-        this.stepAmount = Std.int((elements - elementsPerScreen) / maxStep);
+    public function new(parent:BaseWindow, relativeX:Int, relativeY:Int, rowsPerScreen:Int, numRows:Int) {
+        this.scrollbarLength = Global.CELL_SIZE * parent.heightInTiles;
+
+        this.rowsPerStep = 0;
+        do {
+            rowsPerStep++;
+            this.thumbLength = Std.int(scrollbarLength - (numRows - rowsPerScreen) / rowsPerStep);
+            trace('$thumbLength = $scrollbarLength - ($numRows - $rowsPerScreen) / $rowsPerStep');
+        } while (thumbLength < MIN_THUMB_LENGTH);
+
+        this.maxStep = scrollbarLength - thumbLength;
         this.currentStep = 0;
         this.window = parent;
 
@@ -45,12 +53,18 @@ class Scrollbar extends AttachableSprite {
         setGraphicSize(BaseWindow.SCROLL_SIDE, thumbLength);
         updateHitbox();
 
-        this.scrollbarHitbox = new Hitbox(parent, relativeX, relativeY - BaseWindow.SCROLL_SIDE, BaseWindow.SCROLL_SIDE, BaseWindow.SCROLL_SIDE * 2 + parent.heightInTiles * Global.CELL_SIZE);
+        this.scrollbarHitbox = new Hitbox(parent, relativeX, relativeY - BaseWindow.SCROLL_SIDE, BaseWindow.SCROLL_SIDE,
+            BaseWindow.SCROLL_SIDE * 2 + Global.CELL_SIZE * parent.heightInTiles);
         this.upHitbox = new Hitbox(parent, relativeX, relativeY - BaseWindow.SCROLL_SIDE, BaseWindow.SCROLL_SIDE, BaseWindow.SCROLL_SIDE);
-        this.downHitbox = new Hitbox(parent, relativeX, relativeY + barLength, BaseWindow.SCROLL_SIDE, BaseWindow.SCROLL_SIDE);
+        this.downHitbox = new Hitbox(parent, relativeX, relativeY + scrollbarLength, BaseWindow.SCROLL_SIDE, BaseWindow.SCROLL_SIDE);
         this.scrollbarHitbox.scrollFactor.set(0, 0);
         this.upHitbox.scrollFactor.set(0, 0);
         this.downHitbox.scrollFactor.set(0, 0);
+
+        trace('ROWSPERSTEP: $rowsPerStep');
+        trace('SCROLLBAR: $scrollbarLength');
+        trace('THUMB: $thumbLength');
+        trace('ITEMS: $numRows');
     }
 
     override public function update(elapsed:Float) {
@@ -108,7 +122,8 @@ class Scrollbar extends AttachableSprite {
         relativeY = startY + currentStep;
 
         if (currentStep != _previousStep) {
-            window.notifyScrollUpdate(currentStep);
+            trace('STEP: ${rowsPerStep * currentStep}');
+            window.notifyScrollUpdate(rowsPerStep * currentStep);
         }
     }
 }

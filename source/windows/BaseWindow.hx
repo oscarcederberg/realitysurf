@@ -84,7 +84,7 @@ abstract class BaseWindow extends FlxSprite {
         this.widthInTiles = width;
         this.heightInTiles = height;
         this.widthInPixels = Global.CELL_SIZE * (width + 2) - (OFFSET_SIDE * 2);
-        this.heightInPixels = Global.CELL_SIZE * (height + 2) - (OFFSET_TOP + OFFSET_BOTTOM);
+        this.heightInPixels = Global.CELL_SIZE * (height + 2) - (Global.CELL_SIZE - OFFSET_TOP) - (Global.CELL_SIZE - OFFSET_BOTTOM);
 
         this.x0 = -OFFSET_SIDE;
         this.x1 = Global.CELL_SIZE - OFFSET_SIDE;
@@ -126,7 +126,7 @@ abstract class BaseWindow extends FlxSprite {
 
         // CLAMP WINDOW POSITION
         x = Math.min(Math.max(x, 0), FlxG.width - widthInPixels);
-        y = Math.min(Math.max(y, Global.CELL_SIZE), FlxG.height - Global.CELL_SIZE - widthInPixels);
+        y = Math.min(Math.max(y, Global.CELL_SIZE), FlxG.height - Global.CELL_SIZE - heightInPixels);
 
         if (hasContent) {
             content.update(elapsed);
@@ -170,7 +170,7 @@ abstract class BaseWindow extends FlxSprite {
         this.content = content;
         content.scrollFactor.set(0, 0);
 
-        if (content.elements > content.elementsPerScreen) {
+        if (content.numRows > content.rowsPerScreen) {
             addScrollbar();
         }
     }
@@ -182,7 +182,7 @@ abstract class BaseWindow extends FlxSprite {
         stampTile(MIDDLE_RIGHT_SCROLL);
         stampTile(BOTTOM_RIGHT_SCROLL);
 
-        scrollbar = new Scrollbar(this, x2 + OFFSET_SCROLL_X, y1, content.elementsPerScreen, content.elements);
+        scrollbar = new Scrollbar(this, x2 + OFFSET_SCROLL_X, y1, content.rowsPerScreen, content.numRows);
         scrollbar.scrollFactor.set(0, 0);
     }
 

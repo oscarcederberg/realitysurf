@@ -5,8 +5,8 @@ import utils.AttachableSprite;
 
 abstract class BaseWindowContent extends AttachableSprite {
     public var currentElement:Int = 0;
-    public var elements:Int;
-    public var elementsPerScreen:Int;
+    public var numRows:Int;
+    public var rowsPerScreen:Int;
 
     var window:BaseWindow;
 
