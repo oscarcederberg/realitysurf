@@ -39,7 +39,6 @@ class Scrollbar extends AttachableSprite {
             rowsPerStep++;
             this.thumbLength = Std.int(scrollbarLength
                 - (numRows - rowsPerScreen) / rowsPerStep);
-            trace('$thumbLength = $scrollbarLength - ($numRows - $rowsPerScreen) / $rowsPerStep');
         } while (thumbLength < MIN_THUMB_LENGTH);
 
         this.maxStep = scrollbarLength - thumbLength;
@@ -68,11 +67,6 @@ class Scrollbar extends AttachableSprite {
         this.scrollbarHitbox.scrollFactor.set(0, 0);
         this.upHitbox.scrollFactor.set(0, 0);
         this.downHitbox.scrollFactor.set(0, 0);
-
-        trace('ROWSPERSTEP: $rowsPerStep');
-        trace('SCROLLBAR: $scrollbarLength');
-        trace('THUMB: $thumbLength');
-        trace('ITEMS: $numRows');
     }
 
     override public function update(elapsed:Float) {

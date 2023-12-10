@@ -48,12 +48,15 @@ class WindowHandler {
     public function createWindow(file:BaseFile):Void {
         var windowWidth:Int = file.windowWidth;
         var windowHeight:Int = file.windowHeight;
-        var windowX:Int = random.int(0,
-            FlxG.width - Global.CELL_SIZE * (windowWidth
-                + 2) + (BaseWindow.OFFSET_SIDE * 2));
-        var windowY:Int = random.int(Global.CELL_SIZE,
-            FlxG.height - Global.CELL_SIZE * (windowHeight
-                + 2) - (BaseWindow.OFFSET_TOP + BaseWindow.OFFSET_BOTTOM));
+
+        var maxWindowX = FlxG.width
+            - BaseWindow.calculateWidthInPixels(windowWidth);
+        var maxWindowY = FlxG.height
+            - HUD.BAR_HEIGHT
+            - BaseWindow.calculateHeightInPixels(windowHeight);
+
+        var windowX:Int = random.int(0, maxWindowX);
+        var windowY:Int = random.int(HUD.BAR_HEIGHT, maxWindowY);
 
         var window:BaseWindow = switch (file.fileType) {
         case Text:

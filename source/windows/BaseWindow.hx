@@ -35,7 +35,7 @@ abstract class BaseWindow extends FlxSprite {
     // NOTE: Offsets based on the window graphics.
     public static inline final OFFSET_TOP:Int = 6;
     public static inline final OFFSET_SIDE:Int = 8;
-    public static inline final OFFSET_BOTTOM:Int = 11;
+    public static inline final OFFSET_BOTTOM:Int = 12;
     public static inline final OFFSET_BAR:Int = 7;
     public static inline final OFFSET_SCROLL_X:Int = 4;
     public static inline final OFFSET_CONTENT_X:Int = Global.CELL_SIZE
@@ -86,10 +86,8 @@ abstract class BaseWindow extends FlxSprite {
         this.handler = handler;
         this.widthInTiles = width;
         this.heightInTiles = height;
-        this.widthInPixels = Global.CELL_SIZE * (width + 2) - (OFFSET_SIDE * 2);
-        this.heightInPixels = Global.CELL_SIZE * (height + 2)
-            - (Global.CELL_SIZE - OFFSET_TOP)
-            - (Global.CELL_SIZE - OFFSET_BOTTOM);
+        this.widthInPixels = calculateWidthInPixels(width);
+        this.heightInPixels = calculateHeightInPixels(height);
 
         this.x0 = -OFFSET_SIDE;
         this.x1 = Global.CELL_SIZE - OFFSET_SIDE;
@@ -305,6 +303,17 @@ abstract class BaseWindow extends FlxSprite {
                 _point.x, _point.y);
             this.graphic.bitmap.draw(bitmaps[tile], _matrix);
         }
+    }
+
+    public static function calculateHeightInPixels(heigthTiles:Int):Int {
+        return Global.CELL_SIZE * (heigthTiles + 2)
+            - BaseWindow.OFFSET_TOP
+            - BaseWindow.OFFSET_BOTTOM;
+    }
+
+    public static function calculateWidthInPixels(widthTiles:Int):Int {
+        return Global.CELL_SIZE * (widthTiles + 2)
+            - (2 * BaseWindow.OFFSET_SIDE);
     }
 
     public static function loadAllTileAssets() {
