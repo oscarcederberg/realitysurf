@@ -215,8 +215,7 @@ abstract class BaseWindow extends FlxSprite {
         }
     }
 
-    public function handleInput(point:FlxPoint, click:Bool, pressing:Bool,
-            scroll:Int):Void {
+    public function handleInput(point:FlxPoint, click:Bool, scroll:Int):Void {
         if (closeHitbox.overlapsPoint(point)) {
             if (click) {
                 handler.deleteWindow(this);
@@ -240,7 +239,7 @@ abstract class BaseWindow extends FlxSprite {
             }
 
             if (hasScrollbar) {
-                scrollbar.handleInput(point, click, pressing, scroll);
+                scrollbar.handleInput(point, click, scroll);
             }
         }
     }

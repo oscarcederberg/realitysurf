@@ -23,12 +23,11 @@ class WindowHandler {
     public function update(elapsed:Float):Void {
         var _point:FlxPoint = FlxG.mouse.getPositionInCameraView();
         var _click:Bool = FlxG.mouse.justPressed;
-        var _pressing:Bool = FlxG.mouse.pressed;
         var _scroll:Int = FlxG.mouse.wheel;
 
         for (window in stack) {
             if (window.getWindowHitbox().overlapsPoint(_point)) {
-                window.handleInput(_point, _click, _pressing, _scroll);
+                window.handleInput(_point, _click, _scroll);
                 break;
             }
         }

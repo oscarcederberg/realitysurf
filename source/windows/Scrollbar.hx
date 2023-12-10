@@ -72,6 +72,10 @@ class Scrollbar extends AttachableSprite {
     override public function update(elapsed:Float) {
         super.update(elapsed);
 
+        if (currentState == Dragging) {
+            handleDragging();
+        }
+
         scrollbarHitbox.update(elapsed);
         upHitbox.update(elapsed);
         downHitbox.update(elapsed);
@@ -93,8 +97,7 @@ class Scrollbar extends AttachableSprite {
         return scrollbarHitbox;
     }
 
-    public function handleInput(point:FlxPoint, click:Bool, pressing:Bool,
-            scroll:Int) {
+    public function handleInput(point:FlxPoint, click:Bool, scroll:Int) {
         var _previousStep = currentStep;
 
         if (currentState != Dragging) {
@@ -114,21 +117,31 @@ class Scrollbar extends AttachableSprite {
             }
         }
 
-        if (currentState == Dragging) {
-            if (!pressing) {
-                currentState = Idle;
-            } else {
-                currentStep = Std.int((point.y - (parent.y + startY))
-                    - mouseOffset.y);
-            }
-        }
-
         currentStep = Std.int(Math.min(maxStep, Math.max(0, currentStep)));
         relativeY = startY + currentStep;
 
         if (currentStep != _previousStep) {
-            trace('STEP: ${rowsPerStep * currentStep}');
             window.notifyScrollUpdate(rowsPerStep * currentStep);
+        }
+    }
+
+    private function handleDragging():Void {
+        var _mousePressed:Bool = FlxG.mouse.pressed;
+        var _mousePoint:FlxPoint = FlxG.mouse.getScreenPosition();
+        var _previousStep = currentStep;
+
+        if (_mousePressed) {
+            currentStep = Std.int((_mousePoint.y - (parent.y + startY))
+                - mouseOffset.y);
+
+            currentStep = Std.int(Math.min(maxStep, Math.max(0, currentStep)));
+            relativeY = startY + currentStep;
+
+            if (currentStep != _previousStep) {
+                window.notifyScrollUpdate(rowsPerStep * currentStep);
+            }
+        } else {
+            currentState = Idle;
         }
     }
 }
