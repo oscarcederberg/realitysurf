@@ -1,5 +1,7 @@
 package;
 
+import haxe.ds.Option;
+import overlays.HUD;
 import files.BaseFile;
 import flixel.FlxG;
 import flixel.FlxState;
@@ -17,6 +19,7 @@ class PlayState extends FlxState {
         this.hud = new HUD();
         this.windowHandler = new WindowHandler();
 
+        FlxG.camera.bgColor = Global.RGB_BLACK;
         FlxG.camera.follow(level.player, LOCKON, 0.1);
         FlxG.camera.snapToTarget();
 
@@ -45,5 +48,9 @@ class PlayState extends FlxState {
 
     public function createWindow(file:BaseFile) {
         windowHandler.createWindow(file);
+    }
+
+    public function updateOverlayPrompt(file:Option<String>) {
+        hud.updateOverlayPrompt(file);
     }
 }

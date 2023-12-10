@@ -1,5 +1,6 @@
 package windows;
 
+import overlays.HUD;
 import files.*;
 import flixel.FlxG;
 import flixel.FlxObject;

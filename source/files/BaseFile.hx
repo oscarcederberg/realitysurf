@@ -1,5 +1,6 @@
 package files;
 
+import hx.strings.StringBuilder;
 import files.FileFactory.FileType;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -46,12 +47,24 @@ abstract class BaseFile extends FlxSprite {
         }
     }
 
-    function floatInPlace() {
-        delta_y = AMP_Y * Math.sin(FREQ_Y * Global.stepsTaken + phase_y);
-        old_steps = Global.stepsTaken;
+    public function getFilename():String {
+        var filename = new StringBuilder(fileName);
+        filename.add(switch (fileType) {
+        case Text:
+            ".txt";
+        case Image:
+            ".img";
+        });
+
+        return filename.toString();
     }
 
     public function interact() {
         parent.createWindow(this);
+    }
+
+    private function floatInPlace() {
+        delta_y = AMP_Y * Math.sin(FREQ_Y * Global.stepsTaken + phase_y);
+        old_steps = Global.stepsTaken;
     }
 }

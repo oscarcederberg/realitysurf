@@ -46,7 +46,7 @@ class TextWindowContent extends BaseWindowContent {
                 8);
             text.height = 8;
             text.color = Global.RGB_GREEN;
-            text.setBorderStyle(FlxTextBorderStyle.OUTLINE, Global.RGB_BLACK);
+            text.setBorderStyle(OUTLINE, Global.RGB_BLACK);
             stamp(text, -3 + OFFSET_SIDE, i * 8 + OFFSET_TOP);
 
             text.kill();

@@ -1,5 +1,7 @@
 package;
 
+import files.BaseFile;
+import haxe.ds.Option;
 import flixel.sound.FlxSound;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -70,6 +72,13 @@ class Player extends FlxSprite {
             y + Global.CELL_SIZE + OFFSET_Y);
         handleInput();
         animate();
+
+        switch (getFile()) {
+        case Some(file):
+            parent.updateOverlayPrompt(Some(file.getFilename()));
+        case _:
+            parent.updateOverlayPrompt(None);
+        }
     }
 
     public function handleInput() {
@@ -108,7 +117,8 @@ class Player extends FlxSprite {
             }
 
             if (dx != 0 || dy != 0) {
-                if (!isBlocked(midPoint.add(dx, dy))) {
+                var point = new FlxPoint(dx, dy).addPoint(midPoint);
+                if (!isBlocked(point)) {
                     moveSpeed = (_shift ? SPEED_RUN : SPEED_WALK);
                     currentState = (_shift ? PlayerState.Running : PlayerState.Walking);
                     playStepSound();
@@ -174,25 +184,35 @@ class Player extends FlxSprite {
     }
 
     private function interact() {
+        switch (getFile()) {
+        case Some(file):
+            file.interact();
+        case _:
+        }
+    }
+
+    private function getFile():Option<BaseFile> {
         var dx = 0, dy = 0;
         switch (facing) {
-        case FlxDirectionFlags.UP:
+        case UP:
             dy = -Global.CELL_SIZE;
-        case FlxDirectionFlags.LEFT:
+        case LEFT:
             dx = -Global.CELL_SIZE;
-        case FlxDirectionFlags.DOWN:
+        case DOWN:
             dy = Global.CELL_SIZE;
-        case FlxDirectionFlags.RIGHT:
+        case RIGHT:
             dx = Global.CELL_SIZE;
-        default:
+        case _:
         }
-        var point:FlxPoint = midPoint.add(dx, dy);
 
+        var point:FlxPoint = new FlxPoint(dx, dy).addPoint(midPoint);
         for (file in parent.level.files) {
             if (file.overlapsPoint(point)) {
-                file.interact();
+                return Some(file);
             }
         }
+
+        return None;
     }
 
     private function isBlocked(point:FlxPoint):Bool {
