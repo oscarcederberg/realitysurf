@@ -1,14 +1,16 @@
 # realitysurf
 
 ## Backlog
-- [ ] Graphics: Fix character sprite
+- [ ] Code: Refactor tiles
 - [ ] File: Add animation files
 - [ ] File: Add sound files
 - [ ] File: Add music files
+- [ ] Graphics: Fix character sprite
+- [ ] HTML5: Lock mouse scrolling
+- [ ] Overlay: Replace volume control
+- [ ] Overlay: Add transition for prompt overlay
 - [ ] Window: Add scrollbar for graphical files
-- [ ] Code: Refactor tiles
-- [ ] HUD: Replace volume control
-- [ ] HUD: Add transition for prompt overlay
+- [ ] Window: Add substeps for scrolling
 ## In Progress
 ## Finished
 - [X] HUD: Add prompt overlay
