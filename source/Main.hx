@@ -12,6 +12,6 @@ class Main extends Sprite {
         FlxAssets.FONT_DEFAULT = "assets/fonts/c64_mono.ttf";
         BaseWindow.loadAllTileAssets();
 
-        addChild(new FlxGame(256, 192, PlayState, 60, 60, true));
+        addChild(new FlxGame(320, 240, PlayState, 60, 60, true));
     }
 }
