@@ -10,8 +10,8 @@
 - [ ] Overlay: Replace volume control
 - [ ] Overlay: Add transition for prompt overlay
 - [ ] Window: Add scrollbar for graphical files
-- [ ] Window: Add substeps for scrolling
 ## In Progress
+- [ ] Window: Add substeps for scrolling
 ## Finished
 - [X] HUD: Add prompt overlay
 - [X] Fix window input handling

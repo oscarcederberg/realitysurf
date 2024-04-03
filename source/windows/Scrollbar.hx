@@ -21,6 +21,7 @@ class Scrollbar extends AttachableSprite {
     var scrollbarLength:Int;
     var thumbLength:Int;
     var currentStep:Int;
+    var currentSubstep:Int;
     var maxStep:Int;
     var rowsPerStep:Int;
 
@@ -43,6 +44,7 @@ class Scrollbar extends AttachableSprite {
 
         this.maxStep = scrollbarLength - thumbLength;
         this.currentStep = 0;
+        this.currentSubstep = 0;
         this.window = parent;
 
         super(parent.x + relativeX, parent.y + relativeY);
@@ -99,29 +101,43 @@ class Scrollbar extends AttachableSprite {
 
     public function handleInput(point:FlxPoint, click:Bool, scroll:Int) {
         var _previousStep = currentStep;
+        var _previousSubstep = currentSubstep;
 
         if (currentState != Dragging) {
             if (click && scrollbarHitbox.overlapsPoint(point)) {
                 if (upHitbox.overlapsPoint(point)) {
-                    currentStep--;
+                    currentSubstep--;
                 } else if (downHitbox.overlapsPoint(point)) {
-                    currentStep++;
+                    currentSubstep++;
                 } else if (this.overlapsPoint(point)) {
+                    currentSubstep = 0;
                     activateDragging(point);
                 } else {
                     currentStep = Std.int((point.y - (parent.y + startY))
                         - (thumbLength / 2));
                 }
             } else {
-                currentStep -= scroll;
+                currentSubstep -= scroll;
             }
         }
-
+        if (currentSubstep < 0) {
+            currentStep--;
+            currentSubstep = rowsPerStep + currentSubstep;
+        } else if (currentSubstep >= rowsPerStep) {
+            currentStep++;
+            currentSubstep = currentSubstep - rowsPerStep;
+        }
         currentStep = Std.int(Math.min(maxStep, Math.max(0, currentStep)));
         relativeY = startY + currentStep;
 
-        if (currentStep != _previousStep) {
-            window.notifyScrollUpdate(rowsPerStep * currentStep);
+        if (currentStep == 0 && currentSubstep < 0) {
+            currentSubstep = 0;
+        } else if (currentStep == maxStep) {
+            currentSubstep = 0;
+        }
+
+        if (currentStep != _previousStep || currentSubstep != _previousSubstep) {
+            window.notifyScrollUpdate(rowsPerStep * currentStep + currentSubstep);
         }
     }
 
@@ -131,6 +147,7 @@ class Scrollbar extends AttachableSprite {
         var _previousStep = currentStep;
 
         if (_mousePressed) {
+            currentSubstep = 0;
             currentStep = Std.int((_mousePoint.y - (parent.y + startY))
                 - mouseOffset.y);
 
@@ -138,7 +155,7 @@ class Scrollbar extends AttachableSprite {
             relativeY = startY + currentStep;
 
             if (currentStep != _previousStep) {
-                window.notifyScrollUpdate(rowsPerStep * currentStep);
+                window.notifyScrollUpdate(rowsPerStep * currentStep + currentSubstep);
             }
         } else {
             currentState = Idle;
