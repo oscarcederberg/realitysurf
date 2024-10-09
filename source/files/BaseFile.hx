@@ -34,8 +34,8 @@ abstract class BaseFile extends FlxSprite {
 
         this.fileName = values.name;
         this.fileData = values.data;
-        this.windowWidth = Std.parseInt(values.width);
-        this.windowHeight = Std.parseInt(values.height);
+        this.windowWidth = values.width;
+        this.windowHeight = values.height;
     }
 
     public override function update(elapsed:Float) {
